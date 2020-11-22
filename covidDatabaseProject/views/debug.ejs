@@ -1,0 +1,26 @@
+ <!DOCTYPE html>
+ <html>
+   <head>
+     <title><%= title %></title>
+     <link rel='stylesheet' href='/stylesheets/style.css' />
+   </head>
+   <body>
+     <h1><%= title %></h1>
+     <p>Welcome to <%= title %></p>
+
+     <table>
+        <tr>
+           <th>Dimension</th><th>Quantity</th><th>Factory: rx</th>
+        </tr>
+     
+        <% for (var i = 0; i < result.length; i++) { %>
+         <tr>
+           <td><%= result[i].username %></td>
+           <td><%= result[i].password %></td>
+           <td><%= result[i].email %></td>
+         </tr>    
+        <% } %>
+     </table>
+    </body>
+ </html>
+ 
