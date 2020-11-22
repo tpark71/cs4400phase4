@@ -25,8 +25,28 @@ router.post('/auth', (req, res , next) => {
 
 // Screen 2: Register
 router.get('/register', (req, res, next) => {
-  res.render('screen2', {title:"Register"})
+	mysqlDb.query('SELECT DISTINCT housing_type FROM student',
+	(error, results, fields) => {
+		if (results.length > 0) {
+			var housing_type = results;
+			mysqlDb.query('SELECT DISTINCT location FROM student',
+				(error, results, fields) => {
+					if (results.length > 0) {
+						var location = results;
+						res.render('screen2', {title:"Register", loc:location, housing:housing_type})
+					} else {
+						console.log("Error!");
+					}
+			});
+		} else {
+			console.log("Error!");
+		}
+   });
 });
+
+router.post('/create', (req, res , next) => {
+	res.send("Good!")
+})
 
 
 // Screen 3: Home Screen(s)

@@ -1,0 +1,95 @@
+body {
+    padding: 50px;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  }
+  
+  a {
+    color: #00B7FF;
+  }
+  
+  .register-form {
+    width: 300px;
+    margin: 0 auto;
+    font-family: Tahoma, Geneva, sans-serif;
+  }
+  .register-form h1 {
+    text-align: center;
+    color: #4d4d4d;
+    font-size: 24px;
+    padding: 20px 0 20px 0;
+  }
+  .register-form input[type="password"],
+  .register-form input[name="username"],
+  .register-form input[name="lname"],
+  .register-form input[name="fname"],
+  .register-form input[type="email"] {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #dddddd;
+    margin-bottom: 15px;
+    box-sizing:border-box;
+  }
+  .register-form input[type="submit"] {
+    width: 100%;
+    padding: 15px;
+    background-color: #535b63;
+    border: 0;
+    box-sizing: border-box;
+    cursor: pointer;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 15px;
+  }
+  
+  .register-form input[name="status"] {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #dddddd;
+    margin-bottom: 15px;
+    box-sizing:border-box;
+    display: none;
+  }
+
+  .register-form input[name="test"] {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #dddddd;
+    margin-bottom: 15px;
+    box-sizing:border-box;
+    display: none;
+  }
+  
+  .register-form select[name="status"] {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #dddddd;
+    margin-bottom: 15px;
+    box-sizing:border-box;
+  }
+
+  .register-form select[name="housing_type"],
+  .register-form select[name="location"],
+  .register-form input[name="phone"]
+   {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #dddddd;
+    margin-bottom: 15px;
+    box-sizing:border-box;
+    display: none;
+  }
+
+  .register-form input[name="site_tester"],
+  .register-form input[name="labtech"]
+  {
+    vertical-align: middle;    
+  }
+
+  .register-form label[for="site_tester"],
+  .register-form label[for="labtech"] {
+    border: 1px solid #dddddd;
+    margin-bottom: 15px;
+    display: none;
+    padding: 15px;
+    box-sizing:border-box; 
+  }

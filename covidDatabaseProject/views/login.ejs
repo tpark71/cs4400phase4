@@ -31,20 +31,24 @@
 			box-sizing: border-box;
 			cursor: pointer;
 			font-weight: bold;
+			margin-bottom: 15px;
 			color: #ffffff;
 		}
+
+
 		</style>
 	</head>
 	<body>
 		<div class="login-form">
-			<h1>Login Form</h1>
+			<h1>GT COVID-19 Testing</h1>
 			<form action="auth" method="POST">
 				<input type="text" name="username" placeholder="Username" required>
 				<input type="password" name="password" placeholder="Password" required>
-				<input type="submit">
+				<input type="submit" value="Login">
 			</form>
-			<p style="color:red"><%= title %></p>
-			<a href="/create">Register Now!</a>
+			<form action="register" method="POST">
+				<input type="submit" value="Register">
+			</form>
 		</div>
 	</body>
 </html>

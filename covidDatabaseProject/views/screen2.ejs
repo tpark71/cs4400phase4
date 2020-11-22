@@ -2,17 +2,17 @@
 <html>
   <head>
     <title><%= title %></title>
-    <!-- <link rel='stylesheet' href='/stylesheets/style.css' /> -->
+    <link rel='stylesheet' href='/stylesheets/register.css' />
     <script src="/javascripts/dropdown.js" async></script>
-    <style>
+    <!-- <style>
         div {
         display: none;   
         }  
-    </style>
+    </style> -->
       
   </head>
   <body>
-
+<!-- 
     <select name="options" id="options">
         <option value="1"> Loan Protection Insurance</option>
         <option value="2"> GAP or Cash Assist Insurance</option>
@@ -25,36 +25,58 @@
       <div id="2">Test 2</div>
       <div id="3">Test 3</div>
       <div id="4">Test 4</div>
-      <div id="5">Test 5</div>
+      <div id="5">Test 5</div> -->
 
 
-    <!-- <div class="login-form">
+    <div class="register-form">
         <h1><%= title %></h1>
-                <form action="auth" method="POST">
+                <form action="create" method="POST">
                     <input type="text" name="username" placeholder="Username" required>
-                    <input type="text" name="email" placeholder="Email" required>
+                    <input type="email" name="email" placeholder="Email" required>
                     <input type="text" name="fname" placeholder="First Name" required>
                     <input type="text" name="lname" placeholder="Last Name" required>
                     <input type="password" name="password" placeholder="Password" required>
-                    <input type="password" name="confirm_password" placeholder="Password" required>
+                    <input type="password" name="confirm_password" placeholder="Confirm Password" required>
 
-                    <select class="selectpicker" data-style="btn-info" name="selectpicker">
-                        <optgroup label="Select Table">
-                            <option value="">Select Status</option>
-                            <option value="student">Student</option>
-                            <option value="employee">Employee</option>
-                        </optgroup>
+                    <select name="status" id="options" required>
+                      <option value=""> Select Status</option>
+                      <option value="2"> Student</option>
+                      <option value="3"> Employee</option>
                     </select>
                     
+                    <!-- student requirement -->
+                    <select name="housing_type" id="housing_type" required>
+                      <option value="">Select Housing Type</option>
+                      <% for (var i=0; i < housing.length; i++) { %>
+                      <option value="<%= housing[i].housing_type %>"> <%= housing[i].housing_type %></option>
+                      <% } %>
+                    </select>
+
+                    <select name="location" id="location" required>
+                      <option value="">Select Location</option>
+                      <% for (var i=0; i < loc.length; i++) { %>
+                        <option value="<%= loc[i].location %>"> <%= loc[i].location %></option>
+                        <% } %>
+                    </select>
+
+                    <!-- employee requirement -->
+                    <input id="phone" type="tel" name="phone" placeholder="Phone Number" required>
+                    <label for="site_tester" id="site_tester">
+                      <input id="site_tester_out" type="checkbox" name="site_tester">
+                      Site Tester
+                    </label>
                     
-                    
-                    <input type="submit">
-                </form> -->
+                    <label for="labtech" id="labtech">
+                      <input id="labtech_out" type="checkbox" name="labtech">
+                      Lab Tech
+                    </label>
 
-                
+                    <input type="submit" value="Register">
+                </form>
 
-
-
+                <form action="/">
+                  <input type="submit" value="Back to Login">
+                </form>
 
         </div>
    </body>
