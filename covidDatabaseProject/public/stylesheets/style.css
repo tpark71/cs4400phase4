@@ -36,6 +36,7 @@ a {
   cursor: pointer;
   font-weight: bold;
   color: #ffffff;
+  margin-bottom: 15px;
 }
 
 .login-form input[name="status"] {

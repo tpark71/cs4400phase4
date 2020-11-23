@@ -3,40 +3,21 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/register.css' />
-    <script src="/javascripts/dropdown.js" async></script>
-    <!-- <style>
-        div {
-        display: none;   
-        }  
-    </style> -->
-      
+    <script src="/javascripts/register.js" async></script>
   </head>
   <body>
-<!-- 
-    <select name="options" id="options">
-        <option value="1"> Loan Protection Insurance</option>
-        <option value="2"> GAP or Cash Assist Insurance</option>
-        <option value="3"> Home Insurance</option>
-        <option value="4"> Landlords Insurance</option>
-        <option value="5">  Car Insurance</option>
-      </select>
-      
-      <div id="1" style="display: block">Test 1</div>
-      <div id="2">Test 2</div>
-      <div id="3">Test 3</div>
-      <div id="4">Test 4</div>
-      <div id="5">Test 5</div> -->
-
-
     <div class="register-form">
         <h1><%= title %></h1>
                 <form action="create" method="POST">
+                    <span id="message"><%= not_unique %></span>
                     <input type="text" name="username" placeholder="Username" required>
                     <input type="email" name="email" placeholder="Email" required>
                     <input type="text" name="fname" placeholder="First Name" required>
                     <input type="text" name="lname" placeholder="Last Name" required>
-                    <input type="password" name="password" placeholder="Password" required>
-                    <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+                    <input type="password" id="password" name="password" placeholder="Password" minlength="8" required>
+                    <span id="message"></span>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" onkeyup='check();' required>
+                    
 
                     <select name="status" id="options" required>
                       <option value=""> Select Status</option>
@@ -45,14 +26,14 @@
                     </select>
                     
                     <!-- student requirement -->
-                    <select name="housing_type" id="housing_type" required>
+                    <select name="housing_type" id="housing_type">
                       <option value="">Select Housing Type</option>
                       <% for (var i=0; i < housing.length; i++) { %>
                       <option value="<%= housing[i].housing_type %>"> <%= housing[i].housing_type %></option>
                       <% } %>
                     </select>
 
-                    <select name="location" id="location" required>
+                    <select name="location" id="location">
                       <option value="">Select Location</option>
                       <% for (var i=0; i < loc.length; i++) { %>
                         <option value="<%= loc[i].location %>"> <%= loc[i].location %></option>
@@ -60,7 +41,7 @@
                     </select>
 
                     <!-- employee requirement -->
-                    <input id="phone" type="tel" name="phone" placeholder="Phone Number" required>
+                    <input id="phone" type="tel" name="phone" placeholder="Phone Number">
                     <label for="site_tester" id="site_tester">
                       <input id="site_tester_out" type="checkbox" name="site_tester">
                       Site Tester
@@ -71,7 +52,7 @@
                       Lab Tech
                     </label>
 
-                    <input type="submit" value="Register">
+                    <input type="submit" id="complete_register" value="Register">
                 </form>
 
                 <form action="/">

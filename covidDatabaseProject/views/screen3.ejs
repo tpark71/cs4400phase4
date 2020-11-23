@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <head>
+        <title><%= title %> Home</title>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <script src="/javascripts/home_screen.js" async></script>
+    </head>
+</head>
+<div class="login-form">
+    <body>
+        <h1><%= title %> Home</h1>
+            <!-- student home -->
+            <form action="view_my_results" method="GET">
+                <input type="submit" value="View My Results">
+            </form>
+            <form action="view_aggregate_results" method="GET">
+                <input type="submit" value="View Aggregate Results">
+            </form>
+            <form action="sign_up_for_a_test" method="GET">
+                <input type="submit" value="Sign Up for a Test">
+            </form>
+            <form action="view_daily_results" method="GET">
+                <input type="submit" value="View Daily Results">
+            </form>
+    </body>
+</div>
+</html>
