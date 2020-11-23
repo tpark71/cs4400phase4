@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Aggregate Test Results</title>
+        <link rel='stylesheet' href='/stylesheets/table_view.css' />
+    </head>
+<body>
+    <div class="login-form">
+        <body>
+            <h1>Aggregate Test Results</h1>
+            <table>
+                <tr>
+                   <th>Total</th><th>Timeslot Date</th><th>Date Processed</th><th>Pool Status</th><th>Status</th>
+                </tr>
+                <!-- <% for (var i = 0; i < data.length; i++) { %>
+                    <tr>
+                      <td><%= data[i].test_id %></td>
+                      <td><%= data[i].timeslot_date %></td>
+                      <td><%= data[i].date_processed %></td>
+                      <td><%= data[i].pool_status %></td>
+                      <td><%= data[i].test_status %></td>
+                    </tr>    
+                <% } %> -->
+                
+             </table>
+            
+            <br>
+            
+            <form action="view_aggregate_results_filtered" method="POST">
+
+                <br>
+                <span id="message">Location</span>
+                <select name="location" id="location">
+                    <option value="all">ALL</option>
+                    <% for (var i=0; i < loc.length; i++) { %>
+                    <option value="<%= loc[i].location %>"> <%= loc[i].location %></option>
+                    <% } %>
+                </select>
+                
+                <br>
+                <span id="message">Housing Type</span>
+                <select name="housing_type" id="housing_type">
+                    <option value="all">ALL</option>
+                    <% for (var i=0; i < housing.length; i++) { %>
+                    <option value="<%= housing[i].housing_type %>"> <%= housing[i].housing_type %></option>
+                    <% } %>
+                </select>
+
+                <br>
+                <span id="message">Site</span>
+                <select name="sites" id="sites">
+                    <option value="all">ALL</option>
+                    <% for (var i=0; i < sites.length; i++) { %>
+                    <option value="<%= sites[i].housing_type %>"> <%= sites[i].site_name %></option>
+                    <% } %>
+                </select>
+
+                <br>
+                <br>
+
+                <span id="message">Start Date</span>
+                <input type="date" name="start_date">
+                <span id="message">End Date</span>
+                <input type="date" name="end_date">
+                <input type="submit" value="Filter">
+
+
+            </form>
+        
+            <form action="view_my_results" method="GET">
+                <input type="submit" value="Reset">
+            </form>
+        
+            <form action="home_screen" method="GET">
+                <input type="submit" value="Back (Home)">
+            </form>
+        
+        
+        
+        </body>
+        </div>
+</body>
+</html>
