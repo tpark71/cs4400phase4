@@ -22,7 +22,6 @@ router.post('/auth', (req, res , next) => {
 	 (error, results, fields) => {
 		if (results.length > 0) {
 			obj = results[0]
-
 			res.cookie("username", username)
 			if (obj["student_username"] != null) {
 				res.cookie("status", "Student")
@@ -166,9 +165,15 @@ router.get('/explore_test_result', (req, res, next) => {
 router.get('/view_aggregate_results', (req, res, next) => {
 	console.log(req.cookies.username)
 
-	var dummy = [{
+	var top_row = [{
 		"total": "N/A",
 		"percent": "N/A"
+	}]
+
+	var data = [{
+		"test_status": "N/A",
+		"num_of_test": "N/A",
+		"percentage": "N/A"
 	}]
 	
 	mysqlDb.query('SELECT DISTINCT housing_type FROM student',
@@ -183,7 +188,8 @@ router.get('/view_aggregate_results', (req, res, next) => {
 						(error, results, fields) => {
 							if (results.length > 0) {
 									var sites = results;
-									res.render('screen6', {loc:location, housing:housing_type, sites:sites, data:dummy})
+									console.log(top_row)
+									res.render('screen6', {loc:location, housing:housing_type, sites:sites, top_row:top_row, data:data})
 								} else {
 									console.log("Error!");
 								}
@@ -199,34 +205,141 @@ router.get('/view_aggregate_results', (req, res, next) => {
 })
 
 router.post('/view_aggregate_results_filtered', (req, res, next) => {
+
+	var location = req.body.location;
+	var housing_type = req.body.housing_type;
+	var testing_site = req.body.sites;
+	var start_date = null
+	var end_date = null
+
+	if (location == "all") {
+		location = null;
+	}
+
+	if (housing_type == "all") {
+		housing_type = null;
+	}
+
+	if (testing_site == "all") {
+		testing_site = null;
+	}
+
+	if (req.body.start_date !== 'undefined'&& req.body.start_date) { 
+		start_date = req.body.start_date
+		start_date = String(start_date)
+	}
+
+	if (req.body.end_date !== 'undefined'&& req.body.end_date) { 
+		end_date = req.body.end_date
+		end_date = String(end_date)
+	}
+
+
+
 	mysqlDb.query('CALL aggregate_results(?, ?, ?, ?, ?)',
 		[location, housing_type, testing_site, start_date, end_date],
 		(error, results, fields) => {
 		});
 
-	mysqlDb.query(
-		'SELECT test_id, \
-		DATE_FORMAT(timeslot_date, "%m/%d/%Y") as timeslot_date, \
-		DATE_FORMAT(date_processed, "%m/%d/%Y") as date_processed, \
-		pool_status, test_status from student_view_results_result',
-		(error, results, fields) => {
-			if (results.length > 0) {
-				res.render('screen4', {result:results})
-			} else {
-				res.render("screen4", {result: [{
-					"test_id": "N/A",
-					"timeslot_date": "N/A",
-					"date_processed": "N/A",
-					"pool_status": "N/A",
-					"test_status": "N/A"
-				}] })
+	console.log(location)
+	console.log(housing_type)
+	console.log(testing_site)
+	console.log(start_date)
+	console.log(end_date)
+
+	mysqlDb.query('SELECT DISTINCT housing_type FROM student',
+	(error, results, fields) => {
+		if (results.length > 0) {
+			var housing_type = results;
+			mysqlDb.query('SELECT DISTINCT location FROM student',
+				(error, results, fields) => {
+					if (results.length > 0) {
+						var location = results;
+						mysqlDb.query('select distinct site_name from site',
+						(error, results, fields) => {
+							if (results.length > 0) {
+									var sites = results;
+									mysqlDb.query('Select sum(num_of_test) as total, "100 %" as percent from aggregate_results_result',
+									(error, results, fields) => {
+										if (results.length > 0) {
+												var top_row = results;
+												mysqlDb.query('Select test_status, num_of_test, concat(percentage, " %") as percentage from aggregate_results_result',
+													(error, results, fields) => {
+														if (results.length > 0) {
+																var data = results;
+																res.render('screen6', {loc:location, housing:housing_type, sites:sites, top_row:top_row, data:data})
+															} else {
+																console.log("Error!1");
+															}
+													});		
+											} else {
+												console.log("Error!");
+											}
+								});
+							} else {
+								console.log("Error!");
+							}
+						});
+					} else {
+						console.log("Error!");
+					}
+			});
+		} else {
+			console.log("Error!");
 		}
-	});	
+	});
 	
 })
 
 
 // Screen 7: Signup for a Test
+router.get('/sign_up_for_a_test', (req, res, next) => {
+
+
+
+	var data = [{
+		"date": "N/A",
+		"num_of_test": "N/A",
+		"percentage": "N/A"
+	}]
+
+	mysqlDb.query('SELECT DISTINCT housing_type FROM student',
+	(error, results, fields) => {
+		if (results.length > 0) {
+			var housing_type = results;
+			mysqlDb.query('SELECT DISTINCT location FROM student',
+				(error, results, fields) => {
+					if (results.length > 0) {
+						var location = results;
+						mysqlDb.query('select distinct site_name from site',
+						(error, results, fields) => {
+							if (results.length > 0) {
+									var sites = results;
+									console.log(top_row)
+									res.render('screen6', {loc:location, housing:housing_type, sites:sites, top_row:top_row, data:data})
+								} else {
+									console.log("Error!");
+								}
+						});
+					} else {
+						console.log("Error!");
+					}
+			});
+		} else {
+			console.log("Error!");
+		}
+   });
+
+
+
+
+
+
+
+
+
+})
+
 router.get('/sign_up_for_a_test', (req, res, next) => {
 	res.send("TODO")
 })
