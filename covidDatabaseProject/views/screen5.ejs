@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Explore Test Result</title>
+    <link rel='stylesheet' href='/stylesheets/table_view.css' />
+</head>
+<div class="login-form">
+<body>
+    <h1>Explore Test Result</h1>
+
+    
+
+
+     <table>
+         <tr>
+            <td>Test ID#</td>
+            <td><%= result[0].test_id %></td>
+         </tr>
+         <tr>
+            <td>Date Tested</td>
+            <td><%= result[0].test_date %></td>
+         </tr>
+         <tr>
+            <td>Timeslot</td>
+            <td><%= result[0].timeslot %></td>
+         </tr>
+         <tr>
+            <td>Testing Location</td>
+            <td><%= result[0].testing_location %></td>
+         </tr>
+         <tr>
+            <td>Date Processed</td>
+            <td><%= result[0].date_processed %></td>
+         </tr>
+         <tr>
+            <td>Pooled Result</td>
+            <td><%= result[0].pooled_result %></td>
+         </tr>
+         <tr>
+            <td>Individual Result</td>
+            <td><%= result[0].individual_result %></td>
+         </tr>
+         <tr>
+            <td>Processed By</td>
+            <td><%= result[0].processed_by %></td>
+         </tr>
+     </table>
+     
+    
+     <br>
+
+    <form action="home_screen" method="GET">
+        <input type="submit" value="Back (Home)">
+    </form>
+
+</body>
+</div>
+</html>

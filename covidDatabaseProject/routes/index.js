@@ -325,8 +325,50 @@ router.post('/view_my_results_filtered', (req, res, next) => {
 
 // Screen 5: Explore Test Result
 router.get('/explore_test_result', (req, res, next) => {
-	res.send("TODO")
+	//console.log(username)
+	var test_id = "100003";
+	// need to remove.
+	//temp value == 100003;
+	//test_id = String(test_id)
+
+
+	mysqlDb.query('CALL explore_results(?)',
+	[test_id],
+	(error, results, fields) => {
+		
+	});
+
+	mysqlDb.query('select test_id, \
+	DATE_FORMAT(test_date, "%m/%d/%Y") as test_date, \
+	timeslot,\
+	testing_location,\
+	DATE_FORMAT(date_processed, "%m/%d/%Y") as date_processed, \
+	pooled_result, \
+	individual_result, \
+	processed_by \
+	from explore_results_result',
+		(error, results, fields) => {
+
+			if (results.length > 0) {
+				res.render('screen5', {result:results})
+				console.log("success");
+			} else {
+				res.render('screen5', {result: [{
+					"test_id": "N/A",
+					"test_date": "N/A",
+					"timeslot": "N/A",
+					"testing_location": "N/A",
+					"date_processed": "N/A",
+					"pooled_result": "N/A",
+					"individual_result": "N/A",
+					"processed_by": "N/A"
+				}] })
+				}
+		
+	});
 })
+
+
 
 // Screen 6: Aggregate Test Results
 router.get('/view_aggregate_results', (req, res, next) => {
@@ -612,12 +654,12 @@ router.get('/view_daily_results', (req, res, next) => {
 
 // Debugging Screen
 router.get('/debug', (req, res, next) => {
-  mysqlDb.query('SELECT * FROM student',
+	mysqlDb.query('SELECT * FROM student',
   (error, results, fields) => {
    if (results.length > 0) {
     //  res.render('debug', {title: "debug only", result:results})
-	//  res.json(results);
-	res.send()
+	  res.json(results);
+	//res.send()
    } else {
      console.log("Error!");
    }		
