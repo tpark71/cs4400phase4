@@ -15,11 +15,15 @@
         </tr>
         <% for (var i = 0; i < result.length; i++) { %>
             <tr>
-              <td><%= result[i].test_id %></td>
-              <td><%= result[i].timeslot_date %></td>
-              <td><%= result[i].date_processed %></td>
-              <td><%= result[i].pool_status %></td>
-              <td><%= result[i].test_status %></td>
+                <% if (result[i].date_processed == null) { %>
+                <td><%= result[i].test_id %></td>
+                <% } else { %>
+                <td><a href="/explore_test_result<%=result[i].test_id%>"><%= result[i].test_id %></a></td>
+                <% } %>
+                <td><%= result[i].timeslot_date %></td>
+                <td><%= result[i].date_processed %></td>
+                <td><%= result[i].pool_status %></td>
+                <td><%= result[i].test_status %></td>
             </tr>    
         <% } %>
         

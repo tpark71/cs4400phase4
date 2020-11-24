@@ -328,9 +328,9 @@ router.post('/view_my_results_filtered', (req, res, next) => {
 })
 
 // Screen 5: Explore Test Result
-router.get('/explore_test_result', (req, res, next) => {
+router.get('/explore_test_result:id', (req, res, next) => {
 	//console.log(username)
-	var test_id = "100003";
+	var test_id = req.params.id;
 	// need to remove.
 	//temp value == 100003;
 	//test_id = String(test_id)
