@@ -8,41 +8,30 @@
     <div class="login-form">
         <body>
             <h1>Aggregate Test Results</h1>
-            <table>
-                <tr>
-                   <th>Total</th><th><%= top_row[0].total %></th><th><%= top_row[0].percent %></th>
-                </tr>
-                <% for (var i = 0; i < data.length; i++) { %>
-                    <tr>
-                      <td><%= data[i].test_status %></td>
-                      <td><%= data[i].num_of_test %></td>
-                      <td><%= data[i].percentage %></td>
-                    </tr>    
-                <% } %>
-                
-             </table>
+
+            <span id="error"><%= error%></span>
             
+            <form action="sign_up_for_a_test_process" method="POST">
+                <table>
+                    <tr>
+                    <th>Date</th><th>Time</th><th>Site Address</th><th>Test Site</th><th>Signup</th>
+                    </tr>
+                    <% for (var i = 0; i < data.length; i++) { %>
+                        <tr>
+                        <td><%= data[i].appt_date %></td>
+                        <td><%= data[i].appt_time %></td>
+                        <td><%= data[i].street %></td>
+                        <td><%= data[i].site_name %></td>
+                        <td><input id="sign_up_spot" type="checkbox" name="<%=i%>"></td>
+                        </tr>    
+                    <% } %>
+                    
+                </table>
+                <input type="submit" value="Sign Up">
+            </form>
             <br>
             
-            <form action="view_aggregate_results_filtered" method="POST">
-
-                <br>
-                <span id="message">Location</span>
-                <select name="location" id="location">
-                    <option value="all">ALL</option>
-                    <% for (var i=0; i < loc.length; i++) { %>
-                    <option value="<%= loc[i].location %>"> <%= loc[i].location %></option>
-                    <% } %>
-                </select>
-                
-                <br>
-                <span id="message">Housing Type</span>
-                <select name="housing_type" id="housing_type">
-                    <option value="all">ALL</option>
-                    <% for (var i=0; i < housing.length; i++) { %>
-                    <option value="<%= housing[i].housing_type %>"> <%= housing[i].housing_type %></option>
-                    <% } %>
-                </select>
+            <form action="sign_up_for_a_test_filtered" method="POST">
 
                 <br>
                 <span id="message">Site</span>
@@ -53,24 +42,26 @@
                     <% } %>
                 </select>
 
-                <br>
-                <br>
-
                 <span id="message">Start Date</span>
                 <input type="date" name="start_date">
                 <span id="message">End Date</span>
                 <input type="date" name="end_date">
+
+                <span id="message">Start Time</span>
+                <input type="time" name="start_time">
+                <span id="message">End Time</span>
+                <input type="time" name="end_time">
                 <input type="submit" value="Filter">
 
 
             </form>
         
-            <form action="view_aggregate_results" method="GET">
+            <form action="sign_up_for_a_test" method="GET">
                 <input type="submit" value="Reset">
             </form>
         
             <form action="home_screen" method="GET">
-                <input type="submit" value="Back (Home)">
+                <input type="submit" value="Home">
             </form>
         </body>
     </div>
