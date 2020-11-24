@@ -94,16 +94,20 @@ router.get('/employee_only', (req, res, next) => {
 
 // Screen 2: Register
 router.get('/register', (req, res, next) => {
+	console.log("step 1")
 	mysqlDb.query('SELECT DISTINCT housing_type FROM student',
 	(error, results, fields) => {
 		if (results.length > 0) {
+			console.log("step 2")
 			var housing_type = results;
 			mysqlDb.query('SELECT DISTINCT location FROM student',
 				(error, results, fields) => {
 					if (results.length > 0) {
 						var location = results;
-						res.render('screen2', {title:"Register", loc:location, housing:housing_type, error:req.session.error})
-						delete res.session.error
+						console.log("step 3")
+						console.log(housing_type)
+						console.log(location)
+						res.render('screen2', {title:"Register", loc:location, housing:housing_type, error:""})
 					} else {
 						console.log("Error!");
 					}
