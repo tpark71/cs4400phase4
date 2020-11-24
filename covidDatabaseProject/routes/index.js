@@ -9,8 +9,7 @@ router.get('/', (req, res, next) => {
 
 	res.clearCookie("username");
 	res.clearCookie("status");
-	res.clearCookie("labtech");
-	res.clearCookie("site_tester");
+	res.clearCookie("position");
 
 	res.render('login', {title:''});
 });
@@ -105,8 +104,6 @@ router.get('/register', (req, res, next) => {
 					if (results.length > 0) {
 						var location = results;
 						console.log("step 3")
-						console.log(housing_type)
-						console.log(location)
 						res.render('screen2', {title:"Register", loc:location, housing:housing_type, error:""})
 					} else {
 						console.log("Error!");
@@ -124,75 +121,75 @@ function not_unique_id() {
 
 router.post('/create', (req, res , next) => {
 	var username = req.body.username;
-	
-	mysqlDb.query('SELECT * FROM user',
+	console.log("step 4")
+
+	mysqlDb.query('SELECT * FROM user where username = ?',
+				[username],
 				(error, results, fields) => {
 					if (results.length > 0) {
-						req.session.error = 'Username is already taken. Please try another';
+						console.log("step 5")
+						// req.session.error = 'Username is already taken. Please try another';
 						res.redirect('/register');
 					} else {
-						console.log("Error!")
+						var email = req.body.email;
+						var fname = req.body.fname;
+						var lname = req.body.lname;
+						var password = req.body.password;
+						var status = req.body.status;
+					
+						if (status == "2") {
+							var housing_type = req.body.housing_type;
+							var location = req.body.location;
+							console.log("step 6")
+							mysqlDb.query('CALL register_student(?, ?, ?, ?, ?, ?, ?)',
+							[username, email, fname, lname, location, housing_type, password],
+							(error, results, fields) => {
+							});
+							console.log("step 7")
+							res.cookie("username", username)
+							res.cookie("status", "Student")
+					
+							res.redirect("/home_screen")
+					
+						} else if (status == "3") {
+							var phone_num = req.body.phone;
+							var site_tester = false
+							var labtech = false
+					
+							res.cookie("username", username)
+							res.cookie("status", "Employee")
+					
+							if (req.body.site_tester !== 'undefined'&& req.body.site_tester) { 
+								site_tester = true
+								res.cookie("position", 'site')
+							}
+					
+							if (req.body.labtech !== 'undefined'&& req.body.labtech) { 
+								labtech = true
+								res.cookie("position", 'lab')
+							}
+					
+							if (site_tester && labtech) {
+								res.cookie("position", "both")
+							}
+					
+							if (!site_tester && !labtech) {
+								req.session.error = 'You must select at least one box!';
+								res.redirect('/register');
+							}
+					
+							mysqlDb.query('CALL register_employee(?, ?, ?, ?, ?, ?, ?, ?)',
+							[username, email, fname, lname, phone_num, labtech, site_tester, password],
+							(error, results, fields) => {
+							});
+					
+							res.redirect("/home_screen")
+					
+						} else {
+							console.log("Error: Status is not detected!")
+						}
 					}
 		});
-	
-	var email = req.body.email;
-	var fname = req.body.fname;
-	var lname = req.body.lname;
-	var password = req.body.password;
-	var status = req.body.status;
-
-	if (status == "2") {
-		var housing_type = req.body.housing_type;
-		var location = req.body.location;
-		mysqlDb.query('CALL register_student(?, ?, ?, ?, ?, ?, ?)',
-		[username, email, fname, lname, location, housing_type, password],
-		(error, results, fields) => {
-		});
-		res.cookie("username", username)
-		res.cookie("status", "Student")
-
-		res.redirect("/home_screen")
-
-	} else if (status == "3") {
-		var phone_num = req.body.phone;
-		var site_tester = false
-		var labtech = false
-
-		res.cookie("username", username)
-		res.cookie("status", "Employee")
-
-		if (req.body.site_tester !== 'undefined'&& req.body.site_tester) { 
-			site_tester = true
-			res.cookie("position", 'site')
-		}
-
-		if (req.body.labtech !== 'undefined'&& req.body.labtech) { 
-			labtech = true
-			res.cookie("position", 'lab')
-		}
-
-		if (site_tester && labtech) {
-			res.cookie("position", "both")
-		}
-
-		if (!site_tester && !labtech) {
-			req.session.error = 'You must select at least one box!';
-			res.redirect('/register');
-		}
-
-		mysqlDb.query('CALL register_employee(?, ?, ?, ?, ?, ?, ?, ?)',
-		[username, email, fname, lname, phone_num, labtech, site_tester, password],
-		(error, results, fields) => {
-		});
-
-		res.redirect("/home_screen")
-
-	} else {
-		console.log("Error: Status is not detected!")
-	}
-
-	res.send(status)
-
 })
 
 
@@ -224,6 +221,17 @@ router.get('/home_screen', (req, res, next) => {
 		["view_my_processed_tests","View My Processed Tests"],
 		["view_aggregate_results","View Aggregate Results"],
 		["view_daily_results","View Daily Results"]
+	]
+	both_table = [
+		["process_pool","Process Pool"],
+		["create_pool","Create Pool"],
+		["view_pools","View Pools"],
+		["view_my_processed_tests","View My Processed Tests"],
+		["view_aggregate_results","View Aggregate Results"],
+		["changing_testing","Change Testing"],
+		["view_appointments","View Appointments"],
+		["create_appointment","Create Appointment"],
+		["view_daily_results","View Daily Results"]
 	]	
 
 	if (status == "Employee") {
@@ -242,7 +250,8 @@ router.get('/home_screen', (req, res, next) => {
 
 		if (position == 'both') {
 			status = "Lab Technician / Tester"
-			table = site_tester_table.concat(labtech_table)
+			// table = site_tester_table.concat(labtech_table)
+			table = both_table
 		}
 
 		res.render('screen3', {title:status, table:table})
