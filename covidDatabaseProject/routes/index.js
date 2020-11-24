@@ -36,7 +36,7 @@ router.post('/auth', (req, res , next) => {
 			// 1. USER IS A STUDENT
 			if (obj["student_username"] != null) {
 				res.cookie("status", "Student")
-
+				res.redirect('/home_screen')
 			// 2. USER IS AN EMPLOYEE
 			} else if (obj["emp_username"] != null) {
 				res.cookie("status", "Employee")
