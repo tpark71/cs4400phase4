@@ -217,7 +217,7 @@ router.get('/home_screen', (req, res, next) => {
 	labtech_table = [
 		["process_pool","Process Pool"],
 		["create_pool","Create Pool"],
-		["view_pools","View Pools"],
+		["view_pool","View Pools"],
 		["view_my_processed_tests","View My Processed Tests"],
 		["view_aggregate_results","View Aggregate Results"],
 		["view_daily_results","View Daily Results"]
@@ -225,7 +225,7 @@ router.get('/home_screen', (req, res, next) => {
 	both_table = [
 		["process_pool","Process Pool"],
 		["create_pool","Create Pool"],
-		["view_pools","View Pools"],
+		["view_pool","View Pools"],
 		["view_my_processed_tests","View My Processed Tests"],
 		["view_aggregate_results","View Aggregate Results"],
 		["changing_testing","Change Testing"],
@@ -617,7 +617,66 @@ router.get('/lab_tech_tests_processed', (req, res, next) => {
 
 // Screen 9: View Pools
 router.get('/view_pool', (req, res, next) => {
-	res.send("TODO")
+	var data = [{
+		pool_id: "N/A",
+		test_ids: "N/A",
+		date_processed: "N/A",
+		processed_by: "N/A",
+		pool_status: "N/A"
+	}]
+	mysqlDb.query(
+		'SELECT DISTINCT location FROM student',
+		(error, results, fields) => {
+			if (results.length > 0) {
+				var pool = results;
+				res.render('screen9', {title:"View Pool", pool:pool, data:data, error:""})
+			} else {
+				console.log("Error!");
+			}
+		});
+})
+
+router.post('/view_pool_filtered', (req, res, next) => {
+
+	// VIEW POOL PROCEDURE가 틀려서 하다가 멈춤! 
+
+	var pool_status = req.body.pool_status;
+	var testing_site = req.body.processed_by;
+	var start_date = null
+	var end_date = null
+
+	if (location == "all") {
+		location = null;
+	}
+
+	if (housing_type == "all") {
+		housing_type = null;
+	}
+
+	if (testing_site == "all") {
+		testing_site = null;
+	}
+
+	if (req.body.start_date !== 'undefined'&& req.body.start_date) { 
+		start_date = req.body.start_date
+		start_date = String(start_date)
+	}
+
+	if (req.body.end_date !== 'undefined'&& req.body.end_date) { 
+		end_date = req.body.end_date
+		end_date = String(end_date)
+	}
+
+	mysqlDb.query(
+		'SELECT DISTINCT location FROM student',
+		(error, results, fields) => {
+			if (results.length > 0) {
+				var pool = results;
+				res.render('screen9', {title:"View Pool", pool:pool, data:data, error:""})
+			} else {
+				console.log("Error!");
+			}
+		});
 })
 
 // Screen 10: Create a Pool
@@ -625,15 +684,107 @@ router.get('/create_a_pool', (req, res, next) => {
 	res.send("TODO")
 })
 
-// Screen 11: View Pool
-router.get('/view_pool', (req, res, next) => {
+// Screen 11: Process Pool
+router.get('/process_pool', (req, res, next) => {
 	res.send("TODO")
 })
 
 // Screen 12: Create an Appointment
-router.get('/create_an_appointment', (req, res, next) => {
-	res.send("TODO")
+router.get('/create_appointment', (req, res, next) => {
+
+	var username = req.cookies.username
+	var position = req.cookies.position
+	var message = String(req.cookies.error)
+
+	if (position == "Admin") {
+		mysqlDb.query(
+			'select distinct site from site',
+			(error, results, fields) => {
+				if (results.length > 0) {
+					var sites = results;
+
+					error = message
+					if (error === 'undefined') { 
+						error = ""
+					}
+					res.clearCookie("error")
+					
+					res.render('screen12', {title:"Create Appointment", sites:sites, error:error})
+				} else {
+					console.log("Error!");
+				}
+			});
+	} else {
+		mysqlDb.query(
+			'select distinct site from working_at \
+			left join site on site_name = site \
+			where username = ?',
+			[username],
+			(error, results, fields) => {
+				if (results.length > 0) {
+					var sites = results;
+
+					error = message
+					if (error === 'undefined') { 
+						error = ""
+					}
+					res.clearCookie("error")
+					
+					res.render('screen12', {title:"Create Appointment", sites:sites, error:error})
+				} else {
+					console.log("Error!");
+				}
+			});
+	}
 })
+
+router.post('/create_appointment_process', (req, res, next) => {
+
+	var username = req.cookies.username
+	var position = req.cookies.position
+	var site = req.body.status
+	var date = String(req.body.date)
+	var time = String(req.body.time)
+	var message = "You have created an appointment on " + date + "at " + time + " in " + site;
+
+	console.log(username)
+	console.log(position)
+	console.log(site)
+	console.log(date)
+	console.log(time)
+
+	mysqlDb.query(
+		'select * from appointment \
+		where site_name = ? and appt_date = ? and appt_time = ?',
+		[site, date, time],
+		(error, results, fields) => {
+			if (results.length > 0) {
+				res.cookie("error", "Appointment Exist Already. Try Another Time")
+				res.redirect('/create_appointment')
+			} else {
+				mysqlDb.query(
+					'CALL create_appointment(?, ?, ?)',
+					[site, date, time],
+					(error, results, fields) => {
+						if (results.length > 0) {
+							res.cookie("error", "Cannot Make Appointment. Try Another Time")
+							res.redirect('/create_appointment')
+						} else {
+							res.render("successed", {title:"Congrat!", message:message});
+						}
+					});
+			}
+		});
+
+	
+
+	
+
+
+
+
+})
+
 
 // Screen 13: View Appointments
 router.get('/view_appointments', (req, res, next) => {
@@ -662,7 +813,23 @@ router.get('/tester_change_testing_site', (req, res, next) => {
 
 // Screen 18: View Daily Results
 router.get('/view_daily_results', (req, res, next) => {
-	res.send("TODO")
+	mysqlDb.query(
+		'CALL daily_results()',
+		(error, results, fields) => {
+		});
+	mysqlDb.query(
+		'select DATE_FORMAT(process_date, "%m/%d/%Y") as process_date, \
+		 num_tests, pos_tests, \
+		 concat(pos_percent, " %") as pos_percent \
+		 from daily_results_result',
+		(error, results, fields) => {
+			if (results.length > 0) {
+				var data = results;
+				res.render('screen18', {title:"View Daily Results", error:"", data:data})
+			} else {
+				console.log("Error!");
+			}
+		});
 })
 
 // Debugging Screen

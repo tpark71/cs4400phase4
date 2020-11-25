@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/table_view.css' />
+    </head>
+<body>
+    <div class="login-form">
+        <body>
+            <h1><%= title %></h1>
+
+            <span id="error"><%= error%></span>
+                <table>
+                    <tr>
+                    <th>Date</th><th>Tests Processed</th><th>Positive Count</th><th>Positive Percent</th>
+                    </tr>
+                    <% for (var i = 0; i < data.length; i++) { %>
+                        <tr>
+                        <td><%= data[i].process_date %></td>
+                        <td><%= data[i].num_tests %></td>
+                        <td><%= data[i].pos_tests %></td>
+                        <td><%= data[i].pos_percent %></td>
+                        </tr>    
+                    <% } %>
+                    
+                </table>
+            <br>
+        
+            <form action="home_screen" method="GET">
+                <input type="submit" value="Back (Home)">
+            </form>
+        </body>
+    </div>
+</body>
+</html>

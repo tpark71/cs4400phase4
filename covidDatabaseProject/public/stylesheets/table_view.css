@@ -18,6 +18,13 @@ body {
     font-size: 24px;
     padding: 20px 0 20px 0;
   }
+
+  .login-form span[id="error_message"] {
+    text-align: center;
+    color: red;
+    font-size: 15px;
+  }
+
   .login-form input[type="password"],
   .login-form input[type="text"],
   .login-form input[type="email"],

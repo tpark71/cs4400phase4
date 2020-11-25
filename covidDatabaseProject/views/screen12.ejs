@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/table_view.css' />
+    </head>
+<body>
+    <div class="login-form">
+        <body>
+            <h1><%= title %></h1>
+
+            <span id="error_message"><%= error%></span>
+            
+            <form action="create_appointment_process" method="POST">
+
+                <br>
+                <span id="message">Site</span>
+                <select name="status" id="sites" required>
+                    <option value="">Please Select Testing Site</option>
+                    <% for (var i=0; i < sites.length; i++) { %>
+                    <option value="<%= sites[i].site %>"> <%= sites[i].site %></option>
+                    <% } %>
+                </select>
+
+                <span id="message">Date</span>
+                <input type="date" name="date" required>
+
+                <span id="message">Time</span>
+                <input type="time" name="time" required>
+                <input type="submit" value="Create Appointment">
+
+
+            </form>
+        
+            <form action="home_screen" method="GET">
+                <input type="submit" value="Home">
+            </form>
+        </body>
+    </div>
+</body>
+</html>
