@@ -624,57 +624,63 @@ router.get('/view_pool', (req, res, next) => {
 		processed_by: "N/A",
 		pool_status: "N/A"
 	}]
-	mysqlDb.query(
-		'SELECT DISTINCT location FROM student',
-		(error, results, fields) => {
-			if (results.length > 0) {
-				var pool = results;
-				res.render('screen9', {title:"View Pool", pool:pool, data:data, error:""})
-			} else {
-				console.log("Error!");
-			}
-		});
-})
+
+	var message = String(req.cookies.error)
+	var pool = [ "Positive", "Negative", "Pending"]
+
+	error = message
+	if (error === 'undefined') { 
+		error = ""
+	}
+	res.clearCookie("error")
+
+	res.render('screen9', {title:"View Pool", pool:pool, data:data, error:error})
+});
 
 router.post('/view_pool_filtered', (req, res, next) => {
+	console.log(req.body.sites)
 
-	// VIEW POOL PROCEDURE가 틀려서 하다가 멈춤! 
-
-	var pool_status = req.body.pool_status;
-	var testing_site = req.body.processed_by;
+	var pool_status = req.body.sites;
 	var start_date = null
 	var end_date = null
-
-	if (location == "all") {
-		location = null;
+	var processed_by = req.body.processed_by;
+	
+	if (pool_status == "all") {
+		pool_status = null;
 	}
 
-	if (housing_type == "all") {
-		housing_type = null;
+	if (processed_by == '') {
+		processed_by = null;
 	}
 
-	if (testing_site == "all") {
-		testing_site = null;
-	}
-
-	if (req.body.start_date !== 'undefined'&& req.body.start_date) { 
+	if (req.body.start_date !== 'undefined' && req.body.start_date) { 
 		start_date = req.body.start_date
 		start_date = String(start_date)
 	}
 
-	if (req.body.end_date !== 'undefined'&& req.body.end_date) { 
+	if (req.body.end_date !== 'undefined' && req.body.end_date) { 
 		end_date = req.body.end_date
 		end_date = String(end_date)
 	}
 
 	mysqlDb.query(
-		'SELECT DISTINCT location FROM student',
+		'CALL view_pools(?,?,?,?)',
+		[start_date, end_date, pool_status, processed_by],
+		(error, results, fields) => {
+		});
+
+
+
+	mysqlDb.query(
+		'select * from view_pools_result',
 		(error, results, fields) => {
 			if (results.length > 0) {
-				var pool = results;
+				var data = results;
+				var pool = [ "Positive", "Negative", "Pending"]
 				res.render('screen9', {title:"View Pool", pool:pool, data:data, error:""})
 			} else {
-				console.log("Error!");
+				res.cookie("error", "No Result. Please try with other option(s)")
+				res.redirect('/view_pool')
 			}
 		});
 })
@@ -702,7 +708,6 @@ router.get('/create_appointment', (req, res, next) => {
 			(error, results, fields) => {
 				if (results.length > 0) {
 					var sites = results;
-
 					error = message
 					if (error === 'undefined') { 
 						error = ""
@@ -739,6 +744,8 @@ router.get('/create_appointment', (req, res, next) => {
 })
 
 router.post('/create_appointment_process', (req, res, next) => {
+
+
 
 	var username = req.cookies.username
 	var position = req.cookies.position
@@ -807,9 +814,76 @@ router.get('/explore_pool_result', (req, res, next) => {
 })
 
 // Screen 17: Tester Change Testing Site
-router.get('/tester_change_testing_site', (req, res, next) => {
-	res.send("TODO")
+router.get('/changing_testing', (req, res, next) => {
+	var username = req.cookies.username
+
+	mysqlDb.query(
+		'select site from working_at where username = ?',
+		[username],
+		(error, results, fields) => {
+			if (results.length > 0) {
+				var site = results;
+				mysqlDb.query(
+					'select fname, lname from user where username = ?',
+					[username],
+					(error, results, fields) => {
+						if (results.length > 0) {
+							var name = results;
+							mysqlDb.query(
+								'select lower(replace(site_name, " ", "")) as sid , site_name from site',
+								(error, results, fields) => {
+									if (results.length > 0) {
+										var choices = results;
+										console.log(results)
+										res.render('screen17', {title:"Tester Change Testing Site", username:username, name:name, sites:site, error:"", choices:choices})
+									} else {
+										console.log("Error!");
+									}
+								});
+						} else {
+							console.log("Error!");
+						}
+					});
+			} else {
+				console.log("Error!");
+			}
+		});
 })
+
+router.post("/changing_testing_process", (req, res, next) => {
+
+	// const obj = {};
+    // for (let [key, value] of Object.entries(req.body)) {
+    //     obj[key] = value;
+	// }
+	
+	// console.log(obj)
+
+	mysqlDb.query(
+	'select site_name from site',
+	(error, results, fields) => {
+		if (results.length > 0) {
+			var sites = results
+
+			// for (var i = 0; i < sites.length; i++) {
+			// 	console.log(req.body.)
+			// }
+			const obj = {};
+			for (let [key, value] of Object.entries(req.body)) {
+			    obj[key] = value;
+			}
+			obj.additionalField = 0;
+			console.log(obj)
+			
+
+			res.json(results)
+			// res.render('screen12', {title:"Register", error:""})
+		} else {
+			console.log("Error!");
+		}
+	});
+
+});
 
 // Screen 18: View Daily Results
 router.get('/view_daily_results', (req, res, next) => {

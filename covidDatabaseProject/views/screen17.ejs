@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/table_view.css' />
+        <script src="/javascripts/changing_testing_site.js" async></script>
+    </head>
+<body onload="modify_droplist()">
+    <div class="login-form">
+            <h1><%= title %></h1>
+
+            <span id="error_message"><%= error%></span>
+            <form action="changing_testing_process" method="POST" id='form-id'>
+                <table>
+                    <tr>
+                    <td>Username</td><td><%=username%></td>
+                    </tr>
+                    <tr>
+                        <td>Full Name</td><td><%=name[0].fname%> <%=name[0].lname%></td>
+                    </tr>
+                    <tr>
+                        <td>Assgined sites</td>
+                        <td id="allSites">
+                            <% for (var i = 0; i < sites.length; i++) { %>
+                                <li id="<%= sites[i].site %>"><input onclick='deleteSite("<%= sites[i].site %>")' type="button" name="<%= sites[i].site %>" value="X"> <%= sites[i].site %></li>
+                                
+                            <% } %>
+                            
+                            
+                        </td>
+                    </tr>
+                </table>
+            <input type="submit" value="Update">
+        </form>
+
+                <!-- <br>
+                <input type="button" onclick="addSite()" value = "Add">
+                <select name="status" id="options">
+                    <option value=""> Select Site</option>
+                    <% for (var i = 0; i < choices.length; i++) { %>
+                    <option id="selected" value="<%=choices[i].site_name%>"> <%=choices[i].site_name%></option>
+                    <% } %>
+                </select>
+                <br>
+                <br> -->
+
+                <input type="text" name="Worked!">
+
+            
+
+            <ul id="teset"></ul>
+        
+            <form action="home_screen" method="GET">
+                <input type="submit" value="Home">
+            </form>
+    </div>
+</body>
+</html>

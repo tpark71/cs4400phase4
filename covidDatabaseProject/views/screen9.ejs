@@ -9,7 +9,7 @@
         <body>
             <h1><%= title %></h1>
 
-            <span id="error"><%= error%></span>
+            <span id="error_message"><%= error%></span>
             
                 <table>
                     <tr>
@@ -35,7 +35,7 @@
                 <select name="sites" id="pool">
                     <option value="all">ALL</option>
                     <% for (var i=0; i < pool.length; i++) { %>
-                    <option value="<%= pool[i].pool_status %>"> <%= pool[i].pool_status %></option>
+                    <option value="<%= pool[i] %>"> <%= pool[i] %></option>
                     <% } %>
                 </select>
 
