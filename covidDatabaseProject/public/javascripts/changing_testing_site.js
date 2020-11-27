@@ -47,7 +47,13 @@ function addSite() {
         input_button.setAttribute("value", "X")
         input_button.setAttribute("id", goody)
 
+        var input_hidden = document.createElement("input")
+        input_hidden.setAttribute("type", "hidden")
+        input_hidden.setAttribute("value", goody)
+        input_hidden.setAttribute("name", goody)
+
         list.appendChild(input_button);
+        list.appendChild(input_hidden)
         // list.appendChild(document.createElement("BR"));
         list.appendChild(document.createTextNode(" " + selectedValue))
         document.getElementById("allSites").appendChild(list);

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title><%= title%></title>
+        <link rel='stylesheet' href='/stylesheets/table_view.css' />
+    </head>
+<body>
+    <div class="login-form">
+        <body>
+            <h1><%= title%></h1>
+
+            <span id="error_message"><%= error%></span>
+            
+                <table>
+                    <tr>
+                    <th>Date</th><th>Time</th><th>Test Site</th><th>Location</th><th>User</th>
+                    </tr>
+                    <% for (var i = 0; i < data.length; i++) { %>
+                        <tr>
+                        <td><%= data[i].appt_date %></td>
+                        <td><%= data[i].appt_time %></td>
+                        <td><%= data[i].site_name %></td>
+                        <td><%= data[i].location %></td>
+                        <td><%= data[i].username %></td>
+                        </tr>    
+                    <% } %>
+                    
+                </table>
+            </form>
+            <br>
+            
+            <form action="view_appointment_filtered" method="POST">
+
+                <br>
+                <span id="message">Site</span>
+                <select name="sites" id="sites">
+                    <option value="all">ALL</option>
+                    <% for (var i=0; i < sites.length; i++) { %>
+                    <option value="<%= sites[i].site_name %>"> <%= sites[i].site_name %></option>
+                    <% } %>
+                </select>
+
+                <span id="message">Availability</span>
+                <select name="availability" id="availability">
+                    <option value="all">Show ALL</option>
+                    <option value="0"> Show booked only</option>
+                    <option value="1"> Show available only</option>
+                </select>
+
+                <span id="message">Start Date</span>
+                <input type="date" name="start_date">
+                <span id="message">End Date</span>
+                <input type="date" name="end_date">
+
+                <span id="message">Start Time</span>
+                <input type="time" name="start_time">
+                <span id="message">End Time</span>
+                <input type="time" name="end_time">
+
+                <input type="submit" value="Filter">
+
+
+            </form>
+        
+            <form action="view_appointment" method="GET">
+                <input type="submit" value="Reset">
+            </form>
+        
+            <form action="home_screen" method="GET">
+                <input type="submit" value="Home">
+            </form>
+        </body>
+    </div>
+</body>
+</html>

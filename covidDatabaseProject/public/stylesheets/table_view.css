@@ -19,6 +19,13 @@ body {
     padding: 20px 0 20px 0;
   }
 
+  .login-form h2 {
+    text-align: center;
+    color: #4d4d4d;
+    font-size: 15px;
+    padding: 20px 0 20px 0;
+  }
+
   .login-form span[id="error_message"] {
     text-align: center;
     color: red;
@@ -65,7 +72,8 @@ body {
     box-sizing:border-box;
   }
 
-  .login-form select[name="sites"] {
+  .login-form select[name="sites"],
+  .login-form select[name="availability"] {
     width: 100%;
     padding: 5px;
     border: 1px solid #dddddd;
@@ -92,14 +100,7 @@ body {
     margin-bottom: 15px;
   }
 
-  /* .register-form select[name="housing_type"],
-  .register-form select[name="location"],
-  .register-form select[name="sites"]
-   {
-    width: 100%;
-    padding: 15px;
-    border: 1px solid #dddddd;
-    margin-bottom: 15px;
-    box-sizing:border-box;
+  .login-form table[id="positive_table"],
+  .login-form table[id="negative_table"] {
     display: none;
-  } */
+  }

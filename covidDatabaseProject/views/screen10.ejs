@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Aggregate Test Results</title>
+        <link rel='stylesheet' href='/stylesheets/table_view.css' />
+    </head>
+<body>
+    <div class="login-form">
+        <body>
+            <h1>Aggregate Test Results</h1>
+
+            <span id="error_message"><%= error%></span>
+            
+            <form action="create_pool_process" method="POST">
+                <input type="text" name="pool_id" placeholder="Pool ID#" required>
+                <table>
+                    <tr>
+                    <th>Test ID#</th><th>Date Tested</th><th>Include in Pool</th>
+                    </tr>
+                    <% for (var i = 0; i < data.length; i++) { %>
+                        <tr>
+                        <td><%= data[i].test_id %></td>
+                        <td><%= data[i].appt_date %></td>
+                        <td><input id="sign_up_spot" type="checkbox" name="<%=data[i].test_id%>"></td>
+                        </tr>    
+                    <% } %>
+                    
+                </table>
+                <br>
+                <input type="submit" value="Create Pool">
+            </form>
+            
+        
+       
+            <form action="home_screen" method="GET">
+                <input type="submit" value="Home">
+            </form>
+        </body>
+    </div>
+</body>
+</html>

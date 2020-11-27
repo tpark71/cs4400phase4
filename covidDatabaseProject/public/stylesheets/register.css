@@ -19,6 +19,12 @@ body {
     padding: 20px 0 20px 0;
   }
 
+  .register-form span[id="error_message"] {
+    text-align: center;
+    color: red;
+    font-size: 15px;
+  }
+
   .register-form span[id=successed] {
     text-align: center;
     color: #4d4d4d;
@@ -30,7 +36,12 @@ body {
   .register-form input[name="username"],
   .register-form input[name="lname"],
   .register-form input[name="fname"],
-  .register-form input[type="email"] {
+  .register-form input[type="email"],
+  .register-form input[name="site_name"],
+  .register-form input[name="street"],
+  .register-form input[name="city"],
+  .register-form input[name="zip"],
+  .register-form input[name="state"] {
     width: 100%;
     padding: 15px;
     border: 1px solid #dddddd;
@@ -67,7 +78,9 @@ body {
     display: none;
   }
   
-  .register-form select[name="status"] {
+  .register-form select[name="status"],
+  .register-form select[name="loc"],
+  .register-form select[name="tester"] {
     width: 100%;
     padding: 15px;
     border: 1px solid #dddddd;

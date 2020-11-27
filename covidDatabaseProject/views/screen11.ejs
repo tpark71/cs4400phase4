@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/table_view.css' />
+    <script src="/javascripts/process_pool.js" async></script>
+  </head>
+  <body>
+    <div class="login-form">
+        <h1><%= title %></h1>
+        <h2>Pool ID: <%=pool_id%></h2>
+        <span id="error_message"><%= error%></span>
+                <form action="process_pool_filtered" method="POST">
+                    
+                    <span id="message">Date Processed</span>
+                    <input type="date" name="start_date" required>
+                    <input type="hidden" name="pool_id" value="<%=pool_id%>">
+
+                    <select name="status" id="options" required>
+                      <option value=""> Select Status</option>
+                      <option value="2"> Positive</option>
+                      <option value="3"> Negative</option>
+                    </select>
+
+
+                    <!-- Positive table -->
+                        <table id="positive_table">
+                            <tr>
+                            <th>Test ID#</th><th>Date Tested</th><th>Test Result</th>
+                            </tr>
+                            <% for (var i = 0; i < data.length; i++) { %>
+                                <tr>
+                                    <td><%= data[i].test_id %></td>
+                                    <td><%= data[i].appt_date %></td>
+                                    
+                                    <td>
+                                        <select name="<%= data[i].test_id %>" id="ind_status">
+                                            <option value="positive">Positive</option>
+                                            <option value="negative">Negative</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            <% } %>
+                            
+                        </table>
+
+                    <!-- Negative Table -->
+                        <table id="negative_table">
+                            <tr>
+                                <th>Test ID#</th><th>Date Tested</th><th>Test Result</th>
+                            </tr>
+                            <% for (var i = 0; i < data.length; i++) { %>
+                                <tr>
+                                    <td><%= data[i].test_id %></td>
+                                    <td><%= data[i].appt_date %></td>
+                                    <td>Negative</td>
+                                </tr>    
+                            <% } %>
+
+                        </table>
+
+                    <br>
+                    
+                    
+                    <input type="submit" id="complete_register" value="Process Pool">
+                </form>
+
+
+                
+
+                <form action="/">
+                  <input type="submit" value="Back to Login">
+                </form>
+
+        </div>
+   </body>
+</html>

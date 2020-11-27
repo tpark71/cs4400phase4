@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/table_view.css' />
+    </head>
+<body>
+    <div class="login-form">
+        <body>
+            <h1><%= title %></h1>
+
+            <span id="error_message"><%= error%></span>
+            <table>
+                <tr>
+                    <th>Pool ID</th><th><%= data[0].pool_id %></th>
+                </tr>
+                <tr>
+                    <td><%= table[0]%></td>
+                    <td><%= data[0].process_date %></td>
+                </tr>
+                <tr>
+                    <td><%= table[1]%></td>
+                    <td><%= data[0].pool_status %></td>
+                </tr>
+                <tr>
+                    <td><%= table[2]%></td>
+                    <td><%= data[0].processed_by %></td>
+                </tr>
+            </table>
+        <br>
+        <table>
+            <tr>
+            <th>Test ID#</th><th>Date Tested</th><th>Testing Site</th><th>Test Result</th>
+            </tr>
+            <% for (var i = 0; i < data.length; i++) { %>
+                <tr>
+                <td><%= data[i].test_id %></td>
+                <td><%= data[i].appt_date %></td>
+                <td><%= data[i].appt_site %></td>
+                <td><%= data[i].test_status %></td>
+                </tr>    
+            <% } %>
+        </table>
+        
+            <form action="home_screen" method="GET">
+                <input type="submit" value="Back (Home)">
+            </form>
+        </body>
+    </div>
+</body>
+</html>

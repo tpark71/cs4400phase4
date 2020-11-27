@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/register.css' />
+  </head>
+  <body>
+    <div class="register-form">
+        <h1><%= title %></h1>
+        <span id="error_message"><%= error%></span>
+                <form action="create_testing_site_process" method="POST">
+                    <input type="text" name="site_name" placeholder="Site Name" required>
+                    <input type="text" name="street" placeholder="Street Address" required>
+                    <input type="text" name="city" placeholder="City" required>
+                    <input type="text" name="zip" placeholder="Zip Code" required>
+                    <input type="text" name="state" placeholder="State" required>
+
+                    <select name="loc" id="location" required>
+                        <option value="">Select Location</option>
+                        <% for (var i=0; i < loc.length; i++) { %>
+                          <option value="<%= loc[i].location %>"> <%= loc[i].location %></option>
+                          <% } %>
+                      </select>
+
+                    <select name="tester" id="tester" required>
+                      <option value="">Select Tester</option>
+                      <% for (var i=0; i < tester.length; i++) { %>
+                      <option value="<%= tester[i].sitetester_username %>"> <%= tester[i].sitetester_username %></option>
+                      <% } %>
+                    </select>
+
+                    <input type="submit" id="complete_register" value="Create Site">
+                </form>
+
+                <form action="/">
+                  <input type="submit" value="Back to Login">
+                </form>
+
+        </div>
+   </body>
+</html>
