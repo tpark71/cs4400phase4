@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Lab Tech Tests Processed</title>
+        <link rel='stylesheet' href='/stylesheets/table_view.css' />
+    </head>
+<body>
+    <div class="login-form">
+        <body>
+            <h1>Lab Tech Tests Processed</h1>
+
+            
+            
+                <table>
+                    <tr>
+                    <th>Test ID#</th>
+                    <th>Pool ID</th>
+                    <th>
+                      Date Tested
+                      <br>
+                      <button type="button" name="button"><</button>
+                      <br>
+                      <button type="button" name="button">></button>
+                    </th>
+                    <th>
+                      Date Processed
+                      <br>
+                      <button type="button" name="button"><</button>
+                      <br>
+                      <button type="button" name="button">></button>
+                    </th>
+                    <th>
+                      Result
+                      <br>
+                      <button type="button" name="button"><</button>
+                      <br>
+                      <button type="button" name="button">></button>
+                    </th>
+                    </tr>
+                    <% for (var i = 0; i < result.length; i++) { %>
+                        <tr>
+                        <td><%= result[i].test_id %></td>
+                        <td><%= result[i].pool_id %></td>
+                        <td><%= result[i].appt_date %></td>
+                        <td><%= result[i].process_date %></td>
+                        <td><%= result[i].test_status %></td>
+        
+                        </tr>
+                    <% } %>
+
+                </table>
+            
+            <br>
+
+           <form action="sign_up_for_a_test_filtered" method="POST">
+
+                <br>
+                <span id="message">Site</span>
+                <select name="sites" id="sites">
+                    <option value="all">ALL</option>
+                    <% for (var i=0; i < result.length; i++) { %>
+                    <option value="<%= result[i].test_id %>"> <%= result[i].test_id %></option>
+                    <% } %>
+                </select>
+
+                <span id="message">Start Date Tested</span>
+                <input type="date" name="start_date">
+                <span id="message">End Date Tested</span>
+                <input type="date" name="end_date">
+
+                <!-- <input type="submit" value="Submit"> -->
+
+
+            </form> 
+
+            <form action="sign_up_for_a_test" method="GET">
+                <input type="submit" value="Reset">
+            </form>
+
+            <form action="home_screen" method="GET">
+                <input type="submit" value="Back (Home)">
+            </form>
+
+            <form action="home_screen" method="GET">
+                <input type="submit" value="Back (Home)">
+            </form>
+        </body>
+    </div>
+</body>
+</html>

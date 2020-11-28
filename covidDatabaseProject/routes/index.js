@@ -612,8 +612,129 @@ router.post('/sign_up_for_a_test_process', (req, res, next) => {
 
 // Screen 8: Lab Tech Tests Processed
 router.get('/lab_tech_tests_processed', (req, res, next) => {
-	res.send("TODO")
+	var username = req.cookies.username;
+	username = 'jhilborn97';
+
+
+	var data = [{
+		"test_id": "N/A",
+		"pool_id": "N/A",
+		"test_date": "N/A",
+		"process_date": "N/A",
+		"test_status": "N/A"
+	}]
+
+	res.render('screen8');
+
+	mysqlDb.query('select * from test natural join pool where pool.processed_by in (?)',
+	[username],
+	(error, results, fields) => {
+		if (results.length > 0) {
+			
+			res.render("screen8", {result: [{
+				"pool_id": "N/A",
+				"test_id": "N/A",
+				"test_status": "N/A",
+				"appt_site": "N/A",
+				"appt_date": "N/A",
+				"appt_time": "N/A",
+				"pool_status": "N/A",
+				"process_date": "N/A",
+				"processed_by": "N/A"
+			}] })
+			console.log("aaaaa");
+		} else {
+			console.log("Error!");
+			res.render("screen8", {result: [{
+				"pool_id": "N/A",
+				"test_id": "N/A",
+				"test_status": "N/A",
+				"appt_site": "N/A",
+				"appt_date": "N/A",
+				"appt_time": "N/A",
+				"pool_status": "N/A",
+				"process_date": "N/A",
+				"processed_by": "N/A"
+			}] })
+		}
+	});
+
 })
+
+
+
+router.post('/a', (req, res, next) => {
+	var username = req.cookies.username;
+	var testing_site = req.body.sites;
+	var start_date = null
+	var end_date = null
+	var start_time = null
+	var end_time = null
+
+	console.log(username)
+
+	if (testing_site == "all") {
+		testing_site = null;
+	}
+
+	if (req.body.start_date !== 'undefined'&& req.body.start_date) { 
+		start_date = req.body.start_date
+		start_date = String(start_date)
+	}
+
+	if (req.body.end_date !== 'undefined'&& req.body.end_date) { 
+		end_date = req.body.end_date
+		end_date = String(end_date)
+	}
+
+	if (req.body.start_time !== 'undefined'&& req.body.start_time) { 
+		start_time = req.body.start_time
+		start_time = String(start_time)
+	}
+
+	if (req.body.end_time !== 'undefined'&& req.body.end_time) { 
+		end_time = req.body.end_time
+		end_time = String(end_time)
+	}
+
+	console.log(username)
+	console.log(testing_site)
+	console.log(start_date)
+	console.log(end_date)
+	console.log(start_time)
+	console.log(end_time)
+
+	mysqlDb.query('CALL test_sign_up_filter(?, ?, ?, ?, ?, ?)',
+		[username, testing_site, start_date, end_date, start_time, end_time],
+		(error, results, fields) => {
+		});
+
+	console.log("Passed")
+
+
+	mysqlDb.query('select distinct site_name from site',
+						(error, results, fields) => {
+							if (results.length > 0) {
+								var sites = results;
+								mysqlDb.query('SELECT \
+									DATE_FORMAT(appt_date, "%m/%d/%Y") as appt_date, \
+									TIME_FORMAT(appt_time, "%h:%i %p") as appt_time, \
+									street, site_name from test_sign_up_filter_result',
+									(error, results, fields) => {
+										if (results.length > 0) {
+												
+												res.render('screen7', {sites:sites, data:results, error:""})
+											} else {
+												res.redirect("/sign_up_for_a_test_filtered")
+											}
+									});
+								} else {
+									console.log("Error!");
+								}
+						});
+})
+
+
 
 // Screen 9: View Pools
 router.get('/view_pool', (req, res, next) => {
@@ -1282,7 +1403,8 @@ router.get('/debug', (req, res, next) => {
 	mysqlDb.query('SELECT * FROM student',
   (error, results, fields) => {
    if (results.length > 0) {
-    //  res.render('debug', {title: "debug only", result:results})
+	  res.render('debug', {title: "debug only", result:results})
+	
 	  res.json(results);
 	//res.send()
    } else {
