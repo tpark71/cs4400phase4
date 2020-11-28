@@ -344,7 +344,6 @@ router.get('/explore_test_result:id', (req, res, next) => {
 	//temp value == 100003;
 	//test_id = String(test_id)
 
-
 	mysqlDb.query('CALL explore_results(?)',
 	[test_id],
 	(error, results, fields) => {
@@ -516,7 +515,7 @@ router.post('/view_aggregate_results_filtered', (req, res, next) => {
 
 // Screen 7: Signup for a Test
 router.get('/sign_up_for_a_test', (req, res, next) => {
-
+	var username = req.cookies.username
 	var data = [{
 		"appt_date": "N/A",
 		"appt_time": "N/A",
@@ -524,15 +523,28 @@ router.get('/sign_up_for_a_test', (req, res, next) => {
 		"site_name": "N/A"
 	}]
 
-	mysqlDb.query('select distinct site_name from site',
-						(error, results, fields) => {
-							if (results.length > 0) {
-									var sites = results;
-									res.render('screen7', {sites:sites, data:data, error:""})
-								} else {
-									console.log("Error!");
-								}
-						});
+
+	mysqlDb.query(
+		'SELECT DISTINCT location FROM student where student_username=?',
+		[username],
+		(error, results, fields) => {
+			if (results.length > 0) {
+				var location = results[0].location;
+				console.log(location)
+				mysqlDb.query('select distinct site_name from site where location=?',
+				[location],
+				(error, results, fields) => {
+					if (results.length > 0) {
+							var sites = results;
+							res.render('screen7', {sites:sites, data:data, error:""})
+						} else {
+							console.log("Error!");
+						}
+				});
+			} else {
+				console.log("Error!");
+			}
+		});
 })
 
 router.post('/sign_up_for_a_test_filtered', (req, res, next) => {
@@ -581,14 +593,19 @@ router.post('/sign_up_for_a_test_filtered', (req, res, next) => {
 		(error, results, fields) => {
 		});
 
-	console.log("Passed")
-
-
-	mysqlDb.query('select distinct site_name from site',
-						(error, results, fields) => {
-							if (results.length > 0) {
-								var sites = results;
-								mysqlDb.query('SELECT \
+	mysqlDb.query(
+		'SELECT DISTINCT location FROM student where student_username=?',
+		[username],
+		(error, results, fields) => {
+			if (results.length > 0) {
+				var location = results[0].location;
+				console.log(location)
+				mysqlDb.query('select distinct site_name from site where location=?',
+				[location],
+				(error, results, fields) => {
+					if (results.length > 0) {
+							var sites = results;
+							mysqlDb.query('SELECT \
 									DATE_FORMAT(appt_date, "%m/%d/%Y") as appt_date, \
 									TIME_FORMAT(appt_time, "%h:%i %p") as appt_time, \
 									street, site_name from test_sign_up_filter_result',
@@ -600,14 +617,33 @@ router.post('/sign_up_for_a_test_filtered', (req, res, next) => {
 												res.redirect("/sign_up_for_a_test_filtered")
 											}
 									});
-								} else {
-									console.log("Error!");
-								}
-						});
+						} else {
+							console.log("Error!");
+						}
+				});
+			} else {
+				console.log("Error!");
+			}
+		});
+
 })
 
 router.post('/sign_up_for_a_test_process', (req, res, next) => {
-	res.send("TODO")
+	const obj = {};
+	for (let [key, value] of Object.entries(req.body)) {
+		obj[key] = value;
+	}
+	console.log(obj)
+
+	var appointment = obj.sign_up_spot.split(",")
+	console.log(appointment)
+
+	res.json(obj)
+
+	//TODO: Insert above appointment into the database
+
+
+
 })
 
 // Screen 8: Lab Tech Tests Processed
@@ -781,7 +817,7 @@ router.post('/view_pool_filtered', (req, res, next) => {
 
 
 	mysqlDb.query(
-		'select * from view_pools_result',
+		'select pool_id, test_ids, DATE_FORMAT(date_processed, "%m/%d/%Y") as date_processed, processed_by, pool_status from view_pools_result',
 		(error, results, fields) => {
 			if (results.length > 0) {
 				var data = results;
@@ -874,8 +910,8 @@ router.post('/create_pool_process', (req, res, next) => {
 })
 
 // Screen 11: Process Pool
-router.get('/process_pool', (req, res, next) => {
-	var pool_id = "11"
+router.get('/process_pool:pool_id', (req, res, next) => {
+	var pool_id = req.params.pool_id
 	var message = String(req.cookies.error)
 
 	mysqlDb.query(
@@ -1263,8 +1299,10 @@ router.post('/create_testing_site_process', (req, res, next) => {
 })
 
 // Screen 16: Explore Pool Result
-router.get('/explore_pool_result', (req, res, next) => {
-	var pool_id = "1"
+router.get('/explore_pool_result:pool_id', (req, res, next) => {
+	var pool_id = req.params.pool_id
+
+	console.log(pool_id)
 
 	mysqlDb.query(
 		'select \
@@ -1289,7 +1327,7 @@ router.get('/explore_pool_result', (req, res, next) => {
 
 				res.render('screen16', {title:"Explore Pool Result", data:data, table:table, error:""})
 			} else {
-				console.log("Error!");
+				console.log("Error!?!");
 			}
 		});
 })

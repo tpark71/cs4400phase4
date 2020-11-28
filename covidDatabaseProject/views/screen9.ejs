@@ -17,7 +17,17 @@
                     </tr>
                     <% for (var i = 0; i < data.length; i++) { %>
                         <tr>
-                        <td><%= data[i].pool_id %></td>
+                        <td>
+                            <% if (data[i].pool_status==="pending") { %>
+                                <a href="/process_pool<%=data[i].pool_id%>"><%= data[i].pool_id %></a>
+                            <% } else if (data[i].pool_status==="N/A") { %>
+                                <%=data[i].pool_id%>
+                            <% } else { %>
+                                <a href="/explore_pool_result<%=data[i].pool_id%>">
+                                    <%=data[i].pool_id%>
+                                </a>
+                            <% } %>
+                        </td>
                         <td><%= data[i].test_ids %></td>
                         <td><%= data[i].date_processed %></td>
                         <td><%= data[i].processed_by %></td>

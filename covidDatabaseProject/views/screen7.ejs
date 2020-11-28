@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Aggregate Test Results</title>
+        <title>Signup For a Test</title>
         <link rel='stylesheet' href='/stylesheets/table_view.css' />
     </head>
 <body>
     <div class="login-form">
         <body>
-            <h1>Aggregate Test Results</h1>
+            <h1>Signup For a Test</h1>
 
             <span id="error"><%= error%></span>
             
@@ -22,7 +22,7 @@
                         <td><%= data[i].appt_time %></td>
                         <td><%= data[i].street %></td>
                         <td><%= data[i].site_name %></td>
-                        <td><input id="sign_up_spot" type="checkbox" name="<%=i%>"></td>
+                        <td><input id="sign_up_spot" type="radio" name="sign_up_spot" value="<%= data[i].site_name %>,<%= data[i].appt_date %>',<%= data[i].appt_time %>"></td>
                         </tr>    
                     <% } %>
                     
