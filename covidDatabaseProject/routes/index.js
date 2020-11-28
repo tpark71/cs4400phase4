@@ -624,24 +624,12 @@ router.get('/lab_tech_tests_processed', (req, res, next) => {
 		"test_status": "N/A"
 	}]
 
-	res.render('screen8');
-
 	mysqlDb.query('select * from test natural join pool where pool.processed_by in (?)',
 	[username],
 	(error, results, fields) => {
 		if (results.length > 0) {
 			
-			res.render("screen8", {result: [{
-				"pool_id": "N/A",
-				"test_id": "N/A",
-				"test_status": "N/A",
-				"appt_site": "N/A",
-				"appt_date": "N/A",
-				"appt_time": "N/A",
-				"pool_status": "N/A",
-				"process_date": "N/A",
-				"processed_by": "N/A"
-			}] })
+			res.render("screen8", {result: results })
 			console.log("aaaaa");
 		} else {
 			console.log("Error!");
