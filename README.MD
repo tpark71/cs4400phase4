@@ -32,6 +32,7 @@ Then using your favorite browser to access localhost:3000
 - Need to test the edge cases for all screens
 
 
+## For Windows Only
 
 * If nodemon throws "cannot be loaded because running scripts is disabled on this system" in Windows,
   open Windows Powershell as administrator and run following:
