@@ -10,13 +10,23 @@
             <h1>Aggregate Test Results</h1>
 
             <span id="error_message"><%= error%></span>
-            
-            <form action="create_pool_process" method="POST">
-                <input type="text" name="pool_id" placeholder="Pool ID#" required>
+
                 <table>
                     <tr>
-                    <th>Test ID#</th><th>Date Tested</th><th>Include in Pool</th>
+                    <th>Test ID#</th>
+                    <th>
+                        <!-- <form action="/process_orderby/:orderby/:url/:data" method="POST">
+                            <button type="submit" name="test" value = "asc"><</button>
+                          </form>
+                        <form action="/process_orderby/:orderby/:url/:data" method="POST">
+                            <button type="submit" name="test" value = "desc"><</button>
+                          </form> -->
+                        
+                        Date Tested
+                    </th>
+                    <th>Include in Pool</th>
                     </tr>
+                    <form action="create_pool_process" method="POST">
                     <% for (var i = 0; i < data.length; i++) { %>
                         <tr>
                         <td><%= data[i].test_id %></td>
@@ -26,6 +36,8 @@
                     <% } %>
                     
                 </table>
+                <br>
+                    <input type="text" name="pool_id" placeholder="Pool ID#" required>
                 <br>
                 <input type="submit" value="Create Pool">
             </form>

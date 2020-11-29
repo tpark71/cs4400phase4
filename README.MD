@@ -24,8 +24,6 @@ Then using your favorite browser to access localhost:3000
 
 ## TODO
 
-- Screen 7 (Only need to implement INSERT)
-    - /sign_up_for_a_test_process
 - Screen 11 (Only need to test whether it works)
 - Screen 14
 - Sorting table for all required screens

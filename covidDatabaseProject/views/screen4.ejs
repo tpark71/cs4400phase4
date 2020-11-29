@@ -10,9 +10,40 @@
 
     
     <table>
-        <tr>
-           <th>Test ID #</th><th>Timeslot Date</th><th>Date Processed</th><th>Pool Status</th><th>Status</th>
-        </tr>
+        <% if (result[0].test_id != null) { %>
+        <form action="view_my_results_filtered" method="POST">
+            <tr>
+            <input type="hidden" name="initial_data" value="<%=initial_data%>">
+            <th>Test ID #</th>
+            <th>
+                    <button type="submit" name="orderby" value = "timeslot_date asc"><</button>
+                    <button type="submit" name="orderby" value = "timeslot_date desc">></button>   
+                    Timeslot Date</th>
+            <th>
+                    <button type="submit" name="orderby" value = "date_processed asc"><</button>
+                    <button type="submit" name="orderby" value = "date_processed desc">></button>
+                    Date Processed</th>
+            <th>
+                    <button type="submit" name="orderby" value = "pool_status asc"><</button>
+                    <button type="submit" name="orderby" value = "pool_status desc">></button>
+                    Pool Status</th>
+            <th>
+                    <button type="submit" name="orderby" value = "test_status asc"><</button>
+                    <button type="submit" name="orderby" value = "test_status desc">></button>
+                    Status</th>
+            </tr>
+        </form>
+
+        <% } else { %>
+            <tr>
+                <th>Test ID #</th>
+                <th>Timeslot Date</th>
+                <th>Date Processed</th>
+                <th>Pool Status</th>
+                <th>Status</th>
+                </tr>
+        <% } %>
+
         <% for (var i = 0; i < result.length; i++) { %>
             <tr>
                 <% if (result[i].date_processed == null) { %>
