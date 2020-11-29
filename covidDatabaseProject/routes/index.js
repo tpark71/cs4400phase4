@@ -214,7 +214,7 @@ router.get('/home_screen', (req, res, next) => {
 		["view_daily_results","View Daily Results"]
 	]
 	labtech_table = [
-		["process_pool","Process Pool"],
+		// ["process_pool","Process Pool"],
 		["create_pool","Create Pool"],
 		["view_pool","View Pools"],
 		["lab_tech_tests_processed","View My Processed Tests"],
@@ -222,7 +222,7 @@ router.get('/home_screen', (req, res, next) => {
 		["view_daily_results","View Daily Results"]
 	]
 	both_table = [
-		["process_pool","Process Pool"],
+		// ["process_pool","Process Pool"],
 		["create_pool","Create Pool"],
 		["view_pool","View Pools"],
 		["lab_tech_tests_processed","View My Processed Tests"],
