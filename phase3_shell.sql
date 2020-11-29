@@ -367,7 +367,8 @@ BEGIN
         where (processed_by = i_lab_tech_username or i_lab_tech_username is NULL)
         and (test_status = i_test_status or i_test_status is NULL)
         and (appt_date >= i_start_date or i_start_date is NULL)
-        and (appt_date <= i_end_date or i_end_date is NULL);
+        and (appt_date <= i_end_date or i_end_date is NULL)
+        and (test_status != 'pending');
         
         
     -- End of solution

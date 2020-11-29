@@ -758,8 +758,7 @@ router.post('/sign_up_for_a_test_process', (req, res, next) => {
 // Screen 8: Lab Tech Tests Processed
 router.get('/lab_tech_tests_processed', (req, res, next) => {
 	var username = req.cookies.username;
-	username = 'jhilborn97';
-	username = null;
+
 	if(req.body.test_asc != null) {
 		console.log("clicked");
 	}
@@ -836,8 +835,6 @@ router.post('/lab_tech_tests_processed_filtered', (req, res, next) => {
 	}
 	var username = req.cookies.username;
 
-	username = 'jhilborn97';
-	username = null;
 
 	
 
