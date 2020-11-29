@@ -650,7 +650,7 @@ router.post('/sign_up_for_a_test_process', (req, res, next) => {
 router.get('/lab_tech_tests_processed', (req, res, next) => {
 	var username = req.cookies.username;
 	username = 'jhilborn97';
-	var orderBy = '';
+	username = null;
 	if(req.body.test_asc != null) {
 		console.log("clicked");
 	}
@@ -711,75 +711,112 @@ router.get('/lab_tech_tests_processed', (req, res, next) => {
 
 
 
-router.post('/a', (req, res, next) => {
+router.post('/lab_tech_tests_processed_filtered', (req, res, next) => {
+	var orderBy = '';
+	var startDate = null;
+	if (req.body.start_date !== 'undefined'&& req.body.start_date) {
+		startDate = String(req.body.start_date);
+	}
+	var endDate = null;
+	if (req.body.end_date !== 'undefined'&& req.body.end_date) {
+		endDate = String(req.body.end_date);
+	}
+	var status = null;
+	if (req.body.status !== 'undefined'&& req.body.status && req.body.status !== 'all') {
+		status = String(req.body.status);
+	}
 	var username = req.cookies.username;
-	var testing_site = req.body.sites;
-	var start_date = null
-	var end_date = null
-	var start_time = null
-	var end_time = null
 
-	console.log(username)
+	username = 'jhilborn97';
+	username = null;
 
-	if (testing_site == "all") {
-		testing_site = null;
-	}
+	
 
-	if (req.body.start_date !== 'undefined'&& req.body.start_date) { 
-		start_date = req.body.start_date
-		start_date = String(start_date)
-	}
-
-	if (req.body.end_date !== 'undefined'&& req.body.end_date) { 
-		end_date = req.body.end_date
-		end_date = String(end_date)
-	}
-
-	if (req.body.start_time !== 'undefined'&& req.body.start_time) { 
-		start_time = req.body.start_time
-		start_time = String(start_time)
-	}
-
-	if (req.body.end_time !== 'undefined'&& req.body.end_time) { 
-		end_time = req.body.end_time
-		end_time = String(end_time)
-	}
-
-	console.log(username)
-	console.log(testing_site)
-	console.log(start_date)
-	console.log(end_date)
-	console.log(start_time)
-	console.log(end_time)
-
-	mysqlDb.query('CALL test_sign_up_filter(?, ?, ?, ?, ?, ?)',
-		[username, testing_site, start_date, end_date, start_time, end_time],
-		(error, results, fields) => {
+	if (startDate != null || endDate != null || status != null) {
+		mysqlDb.query('CALL tests_processed(?, ?, ?, ?)',
+        [startDate, endDate, status, username],
+	    (error, results, fields) => {
 		});
+	}
 
-	console.log("Passed")
 
+	if(req.body.test == "asc") {
+		
+		orderBy = 'order by test_date asc';
+		console.log(orderBy);
+	} else if (req.body.test == "desc") {
+		console.log("test desc");
+		orderBy = 'order by test_date desc';
+	}
 
-	mysqlDb.query('select distinct site_name from site',
-						(error, results, fields) => {
+	if(req.body.processed == "asc") {
+		console.log("processed asc");
+		orderBy = 'order by process_date asc';
+	} else if (req.body.processed == "desc") {
+		console.log("processed desc");
+		orderBy = 'order by process_date desc';
+	}
+
+	if(req.body.result == "asc") {
+		console.log("result asc");
+		orderBy = 'order by test_status asc';
+	} else if (req.body.result == "desc") {
+		console.log("result desc");
+		orderBy = 'order by test_status desc';
+	}
+
+	var kindStatus = [{
+		"test_status": "N/A"
+	}]
+
+	var data = [{
+		"test_id": "N/A",
+		"pool_id": "N/A",
+		"test_date": "N/A",
+		"process_date": "N/A",
+		"test_status": "N/A"
+	}]
+
+	mysqlDb.query('select distinct test_status from test natural join pool where processed_by = ?',
+	[username],
+	(error, results, fields) => {
 							if (results.length > 0) {
-								var sites = results;
-								mysqlDb.query('SELECT \
-									DATE_FORMAT(appt_date, "%m/%d/%Y") as appt_date, \
-									TIME_FORMAT(appt_time, "%h:%i %p") as appt_time, \
-									street, site_name from test_sign_up_filter_result',
-									(error, results, fields) => {
-										if (results.length > 0) {
-												
-												res.render('screen7', {sites:sites, data:results, error:""})
-											} else {
-												res.redirect("/sign_up_for_a_test_filtered")
-											}
-									});
+									kindStatus = results;
 								} else {
-									console.log("Error!");
+									console.log("Error!a");
+									kindStatus = [{
+										"test_status": "N/A"
+									}]
 								}
 						});
+
+	var query = 'select test_id, pool_id,\
+	DATE_FORMAT(test_date, "%m/%d/%Y") as test_date,\
+	DATE_FORMAT(process_date, "%m/%d/%Y") as process_date,\
+	test_status\
+	from tests_processed_result ';
+
+	query = query.concat(orderBy);
+
+	mysqlDb.query(query,
+	(error, results, fields) => {
+		if (results.length > 0) {
+			
+			data = results;
+			res.render("screen8", {data: data, kindStatus:kindStatus})
+			console.log("aaaaa");
+		} else {
+			console.log("Error!");
+			res.render("screen8", {data: [{
+				"test_id": "N/A",
+				"pool_id": "N/A",
+				"test_date": "N/A",
+				"process_date": "N/A",
+				"test_status": "N/A"
+			}], kindStatus:kindStatus})
+		}
+	});
+	
 })
 
 
