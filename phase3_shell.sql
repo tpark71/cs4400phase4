@@ -361,16 +361,13 @@ BEGIN
     INSERT INTO tests_processed_result
     -- Type solution below
 
-        select t.test_id, t.pool_id, t.appt_date as test_date, p.process_date, t.test_status
-        from test t
-		left join (pool p
-			left join labtech l
-			on l.labtech_username = p.processed_by)
-		on p.pool_id = t.pool_id
-        where (p.processed_by = i_lab_tech_username or i_lab_tech_username is NULL)
-        and (t.test_status = i_test_status or i_test_status is NULL)
-        and (p.process_date >= i_start_date or i_start_date is NULL)
-        and (p.process_date <= i_end_date or i_end_date is NULL);
+        select test_id, pool_id, appt_date as test_date, process_date, test_status
+        from test 
+		natural join pool
+        where (processed_by = i_lab_tech_username or i_lab_tech_username is NULL)
+        and (test_status = i_test_status or i_test_status is NULL)
+        and (appt_date >= i_start_date or i_start_date is NULL)
+        and (appt_date <= i_end_date or i_end_date is NULL);
         
         
     -- End of solution

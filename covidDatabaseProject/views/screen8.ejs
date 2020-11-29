@@ -18,32 +18,41 @@
                     <th>
                       Date Tested
                       <br>
-                      <button type="button" name="button"><</button>
-                      <br>
-                      <button type="button" name="button">></button>
+                      <form action="lab_tech_tests_processed" method="GET">
+                        <button type="submit" name="test_asc" value = "a"><</button>
+                      </form>
+                      <form action="lab_tech_tests_processed" method="GET">
+                        <button type="submit" name="test_desc">></button>
+                      </form>
                     </th>
                     <th>
                       Date Processed
                       <br>
-                      <button type="button" name="button"><</button>
-                      <br>
-                      <button type="button" name="button">></button>
+                      <form action="lab_tech_tests_processed" method="GET">
+                        <button type="submit" name="processed_asc"><</button>
+                      </form>
+                      <form action="lab_tech_tests_processed" method="GET">
+                        <button type="submit" name="processed_desc">></button>
+                      </form>
                     </th>
                     <th>
                       Result
                       <br>
-                      <button type="button" name="button"><</button>
-                      <br>
-                      <button type="button" name="button">></button>
+                      <form action="lab_tech_tests_processed" method="GET">
+                        <button type="submit" name="result_asc"><</button>
+                      </form>
+                      <form action="lab_tech_tests_processed" method="GET">
+                        <button type="submit" name="result_desc">></button>
+                      </form>
                     </th>
                     </tr>
-                    <% for (var i = 0; i < result.length; i++) { %>
+                    <% for (var i = 0; i < data.length; i++) { %>
                         <tr>
-                        <td><%= result[i].test_id %></td>
-                        <td><%= result[i].pool_id %></td>
-                        <td><%= result[i].appt_date %></td>
-                        <td><%= result[i].process_date %></td>
-                        <td><%= result[i].test_status %></td>
+                        <td><%= data[i].test_id %></td>
+                        <td><%= data[i].pool_id %></td>
+                        <td><%= data[i].test_date %></td>
+                        <td><%= data[i].process_date %></td>
+                        <td><%= data[i].test_status %></td>
         
                         </tr>
                     <% } %>
@@ -52,14 +61,14 @@
             
             <br>
 
-           <form action="sign_up_for_a_test_filtered" method="POST">
+           <form action="lab_tech_tests_processed" method="POST">
 
                 <br>
-                <span id="message">Site</span>
-                <select name="sites" id="sites">
+                <span id="message">Test Result</span>
+                <select name="status" id="status">
                     <option value="all">ALL</option>
-                    <% for (var i=0; i < result.length; i++) { %>
-                    <option value="<%= result[i].test_id %>"> <%= result[i].test_id %></option>
+                    <% for (var i=0; i < kindStatus.length; i++) { %>
+                    <option value="<%= kindStatus[i].test_status %>"> <%= kindStatus[i].test_status %></option>
                     <% } %>
                 </select>
 

@@ -650,7 +650,14 @@ router.post('/sign_up_for_a_test_process', (req, res, next) => {
 router.get('/lab_tech_tests_processed', (req, res, next) => {
 	var username = req.cookies.username;
 	username = 'jhilborn97';
+	var orderBy = '';
+	if(req.body.test_asc != null) {
+		console.log("clicked");
+	}
 
+	var kindStatus = [{
+		"test_status": "N/A"
+	}]
 
 	var data = [{
 		"test_id": "N/A",
@@ -659,26 +666,43 @@ router.get('/lab_tech_tests_processed', (req, res, next) => {
 		"process_date": "N/A",
 		"test_status": "N/A"
 	}]
+	
 
-	mysqlDb.query('select * from test natural join pool where pool.processed_by in (?)',
-	[username],
+	mysqlDb.query('CALL tests_processed(?, ?, ?, ?)',
+	[null, null, null, username],
+	(error, results, fields) => {
+	});
+
+
+	mysqlDb.query('select distinct test_status from tests_processed_result',
+	(error, results, fields) => {
+							if (results.length > 0) {
+									kindStatus = results;
+								} else {
+									console.log("Error!");
+								}
+						});
+
+
+	mysqlDb.query('select test_id, pool_id,\
+	DATE_FORMAT(test_date, "%m/%d/%Y") as test_date,\
+	DATE_FORMAT(process_date, "%m/%d/%Y") as process_date,\
+	test_status\
+	from tests_processed_result',
 	(error, results, fields) => {
 		if (results.length > 0) {
 			
-			res.render("screen8", {result: results })
+			data = results;
+			res.render("screen8", {data: data, kindStatus:kindStatus})
 			console.log("aaaaa");
 		} else {
 			console.log("Error!");
-			res.render("screen8", {result: [{
-				"pool_id": "N/A",
+			res.render("screen8", {data: [{
 				"test_id": "N/A",
-				"test_status": "N/A",
-				"appt_site": "N/A",
-				"appt_date": "N/A",
-				"appt_time": "N/A",
-				"pool_status": "N/A",
+				"pool_id": "N/A",
+				"test_date": "N/A",
 				"process_date": "N/A",
-				"processed_by": "N/A"
+				"test_status": "N/A"
 			}] })
 		}
 	});
