@@ -10,18 +10,13 @@
             <h1>Aggregate Test Results</h1>
 
             <span id="error_message"><%= error%></span>
-
+            <% if (data[0].test_id != "N/A") { %>
                 <table>
                     <tr>
                     <th>Test ID#</th>
                     <th>
-                        <!-- <form action="/process_orderby/:orderby/:url/:data" method="POST">
-                            <button type="submit" name="test" value = "asc"><</button>
-                          </form>
-                        <form action="/process_orderby/:orderby/:url/:data" method="POST">
-                            <button type="submit" name="test" value = "desc"><</button>
-                          </form> -->
-                        
+                        <button type="submit" name="orderby" value = "appt_date asc"><</button>
+                        <button type="submit" name="orderby" value = "appt_date desc">></button>
                         Date Tested
                     </th>
                     <th>Include in Pool</th>
@@ -39,8 +34,13 @@
                 <br>
                     <input type="text" name="pool_id" placeholder="Pool ID#" required>
                 <br>
-                <input type="submit" value="Create Pool">
+                    <input type="submit" value="Create Pool">
+                
+                
             </form>
+            <% } else { %>
+                    <!-- <button id="empty_button">Create Pool</button> -->
+            <% } %>
             
         
        

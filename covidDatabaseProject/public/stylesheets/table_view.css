@@ -43,7 +43,8 @@ body {
     margin-bottom: 15px;
     box-sizing:border-box;
   }
-  .login-form input[type="submit"] {
+  .login-form input[type="submit"],
+  .login-form button[id="empty_button"] {
     width: 100%;
     padding: 15px;
     background-color: #535b63;

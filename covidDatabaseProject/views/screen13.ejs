@@ -12,9 +12,41 @@
             <span id="error_message"><%= error%></span>
             
                 <table>
-                    <tr>
-                    <th>Date</th><th>Time</th><th>Test Site</th><th>Location</th><th>User</th>
-                    </tr>
+                    <% if (data[0].appt_date != "N/A") { %>
+                    <form action="view_appointment_filtered" method="POST">
+                        <tr>
+                            <input type="hidden" name="initial_data" value="<%=initial_data%>">
+                            <th>
+                                <button type="submit" name="orderby" value = "appt_date asc"><</button>
+                                <button type="submit" name="orderby" value = "appt_date desc">></button>
+                                Date</th>
+                            <th>
+                                <button type="submit" name="orderby" value = "appt_time asc"><</button>
+                                <button type="submit" name="orderby" value = "appt_time desc">></button>
+                                Time</th>
+                            <th>
+                                <button type="submit" name="orderby" value = "site_name asc"><</button>
+                                <button type="submit" name="orderby" value = "site_name desc">></button>
+                                Test Site</th>
+                            <th>
+                                <button type="submit" name="orderby" value = "location asc"><</button>
+                                <button type="submit" name="orderby" value = "location desc">></button>
+                                Location</th>
+                            <th>
+                                <button type="submit" name="orderby" value = "username asc"><</button>
+                                <button type="submit" name="orderby" value = "username desc">></button>
+                                User</th>
+                        </tr>
+                    </form>
+                    <% } else { %>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Test Site</th>
+                            <th>Location</th>
+                            <th>User</th>
+                        </tr>
+                    <% } %>
                     <% for (var i = 0; i < data.length; i++) { %>
                         <tr>
                         <td><%= data[i].appt_date %></td>

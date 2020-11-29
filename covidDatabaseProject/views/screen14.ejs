@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/table_view.css' />
+        <script src="/javascripts/reassign_tester.js" async></script>
+    </head>
+<body>
+    <div class="login-form">
+        <% var data_string = JSON.stringify(data) %>
+        <body onload="full_modify_droplist('<%=data_string%>')">
+            <h1><%= title %></h1>
+
+            <span id="error_message"><%= error%></span>
+            <form action="create_testing_site_process" method="POST" id='form-id'>
+                <table>
+                    <tr>
+                    <th>Username</th><th>Name</th><th>Phone number</th><th>Assgined Sites</th>
+                    </tr>
+                    <% for (var i = 0; i < data.length; i++) { %>
+                        <tr>
+                        <td><%= data[i].username %></td>
+                        <td><%= data[i].name %></td>
+                        <td><%= data[i].phone_number %></td>
+
+
+                        
+
+
+
+                        <td id="<%= data[i].username %>">
+
+                            <input type="button" value = "Add" onclick="addSite('<%=data[i].username%>_options')" value="X">
+                            <select name="status" id="<%=data[i].username%>_options">
+                                <option value=""> Select Site</option>
+                                <% for (var j = 0; j < choices.length; j++) { %>
+                                <option id="selected" value="<%=choices[j].site_name%>"> <%=choices[j].site_name%></option>
+                                <% } %>
+                            </select>
+
+
+
+                            <% if (Object.keys(data[i].assigned_sites).length != "0") { %>
+                                <% for (var j = 0; j < Object.keys(data[i].assigned_sites).length; j++) { %>
+                                    <li name="<%=data[i].username%>" id="<%=data[i].username%>_<%=data[i].assigned_sites[j]%>">
+                                        <input onclick='deleteSite("<%=data[i].username%>_<%=data[i].assigned_sites[j]%>")' type="button" name="<%= data[i].assigned_sites[j] %>" value="X"> <%= data[i].assigned_sites[j] %>
+                                        <input type="hidden" name="<%=data[i].username%>_<%=data[i].assigned_sites[j]%>" value="<%= data[i].assigned_sites[j] %>">
+                                    </li>
+                                <% } %>
+                            <% } else { %>
+                                <!-- <li name="<%=data[i].username%>" value="No Site Selected Yet" display='none'></li> -->
+                            <% } %>
+
+
+                            
+                    <% } %>
+                        </td>
+                        </tr>    
+                    
+                    
+                </table>
+            <br>
+            <input type="submit" value="Update">
+            </form>
+        
+            <form action="home_screen" method="GET">
+                <input type="submit" value="Back (Home)">
+            </form>
+        </body>
+    </div>
+</body>
+</html>

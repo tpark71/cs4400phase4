@@ -217,7 +217,7 @@ router.get('/home_screen', (req, res, next) => {
 		["process_pool","Process Pool"],
 		["create_pool","Create Pool"],
 		["view_pool","View Pools"],
-		["view_my_processed_tests","View My Processed Tests"],
+		["lab_tech_tests_processed","View My Processed Tests"],
 		["view_aggregate_results","View Aggregate Results"],
 		["view_daily_results","View Daily Results"]
 	]
@@ -225,7 +225,7 @@ router.get('/home_screen', (req, res, next) => {
 		["process_pool","Process Pool"],
 		["create_pool","Create Pool"],
 		["view_pool","View Pools"],
-		["view_my_processed_tests","View My Processed Tests"],
+		["lab_tech_tests_processed","View My Processed Tests"],
 		["view_aggregate_results","View Aggregate Results"],
 		["changing_testing","Change Testing"],
 		["view_appointment","View Appointments"],
@@ -300,9 +300,7 @@ router.get('/view_my_results', (req, res, next) => {
 
 router.post('/view_my_results_filtered', (req, res, next) => {
 	var username = req.cookies.username
-	console.log("here!1")
 	if (req.body.orderby !== "undefined" && req.body.orderby) {
-		console.log("here!2")
 		var orderBy = req.body.orderby
 
 		var initial_data = req.body.initial_data
@@ -1005,9 +1003,19 @@ router.post('/view_pool_filtered', (req, res, next) => {
 // Screen 10: Create a Pool
 router.get('/create_pool', (req, res, next) => {
 	var message = String(req.cookies.error)
+
+	if (req.body.orderby !== "undefined" && req.body.orderby) {
+		var orderBy = req.body.orderby
+ 	} else {
+		var orderBy = "appt_date"
+	}
+
+	var query = 'select test_id, DATE_FORMAT(appt_date, "%m/%d/%Y") as appt_date from test where pool_id is null order by ' + orderBy
+
+
+
 	mysqlDb.query(
-		'select test_id, DATE_FORMAT(appt_date, "%m/%d/%Y") as appt_date from test where pool_id is null order by ?',
-		["appt_date"],
+		query,
 		(error, results, fields) => {
 			if (results.length > 0) {
 				var data = results;
@@ -1020,7 +1028,8 @@ router.get('/create_pool', (req, res, next) => {
 
 				res.render('screen10', {title:"Create Pool", error:error, data:data})
 			} else {
-				console.log("Error!");
+				var data = [{test_id:"N/A", appt_date:"N/A"}]
+				res.render('screen10', {title:"Create Pool", error:"No Pending Test", data:data});
 			}
 		});
 })
@@ -1114,9 +1123,7 @@ router.post('/process_pool_filtered', (req, res, next) => {
 	var processed_date = req.body.start_date
 	var status = req.body.status
 
-	delete obj["pool_id"]
-	delete obj["processed_date"]
-	delete obj["status"]
+	
 
 	const obj = {};
 	
@@ -1124,6 +1131,10 @@ router.post('/process_pool_filtered', (req, res, next) => {
 		obj[key] = value;
 	}
 	console.log(obj)
+
+	delete obj["pool_id"]
+	delete obj["processed_date"]
+	delete obj["status"]
 
 	const tests = Object.keys(obj)
 	
@@ -1149,6 +1160,7 @@ router.post('/process_pool_filtered', (req, res, next) => {
 						res.redirect("/process_pool")
 				} else {
 					// 너무 귀찮아서 아직 테스트 안함ㅋㅋㅋ
+					console.log("got here!")
 					if (status == "2") {
 						mysqlDb.query(
 							'CALL process_pool(?, ?, ?, ?)',
@@ -1157,13 +1169,14 @@ router.post('/process_pool_filtered', (req, res, next) => {
 							});
 						
 						for (var i=0; i<tests.length; i++) {
-							var ind_status = obj[test[i]]
+							var ind_status = obj[tests[i]]
 							mysqlDb.query(
 								'CALL process_test(?,?)',
 								[tests[i], ind_status],
 								(error, results, fields) => {
 								});
 						}
+						res.render("successed", {title:"Pool Processed", message:"You have successfully processed the pool"})
 
 					} else {
 						mysqlDb.query(
@@ -1321,42 +1334,64 @@ router.get('/view_appointment', (req, res, next) => {
 
 router.post('/view_appointment_filtered', (req, res, next) => {
 	var username = req.cookies.username;
-	var testing_site = req.body.sites;
-	var start_date = null
-	var end_date = null
-	var start_time = null
-	var end_time = null
-	var availability = req.body.availability
-
+	
 	console.log(username)
 
-	if (testing_site == "all") {
-		testing_site = null;
+	if (req.body.orderby !== "undefined" && req.body.orderby) {
+		console.log("here!2")
+		console.log(initial_data)
+		var orderBy = req.body.orderby
+
+		var initial_data = req.body.initial_data
+
+		var data_list = initial_data.split(",")
+		var testing_site = ifEmpty(data_list[0]);
+		var availability = ifEmpty(data_list[1])
+		var start_date = ifEmpty(data_list[2])
+		var end_date = ifEmpty(data_list[3])
+		var start_time = ifEmpty(data_list[4])
+		var end_time = ifEmpty(data_list[5])
+	
+ 	} else {
+		var testing_site = req.body.sites;
+		var availability = req.body.availability	
+		var start_date = null
+		var end_date = null
+		var start_time = null
+		var end_time = null
+
+
+		if (testing_site == "all") {
+			testing_site = null;
+		}
+
+		if (availability == "all") {
+			availability = null;
+		}
+
+		if (req.body.start_date !== 'undefined'&& req.body.start_date) { 
+			start_date = req.body.start_date
+			start_date = String(start_date)
+		}
+
+		if (req.body.end_date !== 'undefined'&& req.body.end_date) { 
+			end_date = req.body.end_date
+			end_date = String(end_date)
+		}
+
+		if (req.body.start_time !== 'undefined'&& req.body.start_time) { 
+			start_time = req.body.start_time
+			start_time = String(start_time)
+		}
+
+		if (req.body.end_time !== 'undefined'&& req.body.end_time) { 
+			end_time = req.body.end_time
+			end_time = String(end_time)
+		}
+		var orderBy = "appt_date"
 	}
 
-	if (availability == "all") {
-		availability = null;
-	}
-
-	if (req.body.start_date !== 'undefined'&& req.body.start_date) { 
-		start_date = req.body.start_date
-		start_date = String(start_date)
-	}
-
-	if (req.body.end_date !== 'undefined'&& req.body.end_date) { 
-		end_date = req.body.end_date
-		end_date = String(end_date)
-	}
-
-	if (req.body.start_time !== 'undefined'&& req.body.start_time) { 
-		start_time = req.body.start_time
-		start_time = String(start_time)
-	}
-
-	if (req.body.end_time !== 'undefined'&& req.body.end_time) { 
-		end_time = req.body.end_time
-		end_time = String(end_time)
-	}
+	var initial_data = String([testing_site, availability, start_date, end_date, start_time, end_time])
 
 	console.log(username)
 	console.log(testing_site)
@@ -1370,20 +1405,20 @@ router.post('/view_appointment_filtered', (req, res, next) => {
 		(error, results, fields) => {
 		});
 
-	console.log("Passed")
+	var query = 'SELECT \
+	DATE_FORMAT(appt_date, "%m/%d/%Y") as appt_date, \
+	TIME_FORMAT(appt_time, "%h:%i %p") as appt_time, \
+	site_name, location, username from view_appointments_result ORDER BY ' + orderBy
 
 	mysqlDb.query('select distinct site_name from site',
 						(error, results, fields) => {
 							if (results.length > 0) {
 								var sites = results;
-								mysqlDb.query('SELECT \
-									DATE_FORMAT(appt_date, "%m/%d/%Y") as appt_date, \
-									TIME_FORMAT(appt_time, "%h:%i %p") as appt_time, \
-									site_name, location, username from view_appointments_result ORDER BY appt_date',
+								mysqlDb.query(query,
 									(error, results, fields) => {
 										if (results.length > 0) {
 												data = results
-												res.render('screen13', {title:"View Appointment", sites:sites, data:data, error:""})
+												res.render('screen13', {title:"View Appointment", initial_data:initial_data, sites:sites, data:data, error:""})
 											} else {
 												res.cookie("error","No Appointment Found. Try Again")
 												res.redirect("/view_appointment")
@@ -1396,8 +1431,129 @@ router.post('/view_appointment_filtered', (req, res, next) => {
 })
 
 // Screen 14: Reassign Tester
-router.get('/reassign_tester', (req, res, next) => {
-	res.send("TODO")
+router.get('/reassign_testers', (req, res, next) => {
+	var message = String(req.cookies.error)
+	mysqlDb.query(
+		'CALL view_testers()',
+		(error, results, fields) => {
+		});
+
+	mysqlDb.query(
+		'SELECT * FROM view_testers_result',
+		(error, results, fields) => {
+			if (results.length > 0) {
+				var data = results;
+				console.log(data)
+				for (var i=0; i<data.length; i++) {
+					if (data[i].assigned_sites === null) {
+						data[i].assigned_sites = {}
+					} else {
+						var sites = data[i].assigned_sites.split(",").map(function(item) {
+							return item.trim();
+						});
+						// var dict_sites = {}
+						// for (var j=0; j<sites.length; j++) {
+						// 	var temp = "site" + String(j)
+						// 	dict_sites[temp] = sites[j]
+						// }
+						data[i].assigned_sites =sites
+					}
+					data[i]["list_length"] = ["this", "might", "work"]
+				}
+				console.log(data)
+
+				mysqlDb.query(
+					'select lower(replace(site_name, " ", "")) as sid , site_name from site',
+					(error, results, fields) => {
+						if (results.length > 0) {
+							var choices = results;
+							console.log(data)
+							console.log(data[0].assigned_sites.length)
+
+							error = message
+							if (error === 'undefined') { 
+								error = ""
+							}
+							res.clearCookie("error")
+
+							res.render('screen14', {title:"Register Test", data:data, choices:choices, error:error})
+						} else {
+							console.log("Error!");
+						}
+					});	
+			} else {
+				console.log("Error!");
+			}
+		});
+})
+
+router.post('/create_testing_site_process', (req, res, next) => {
+	var username = req.cookies.username
+	const obj = {};
+	
+	for (let [key, value] of Object.entries(req.body)) {
+		obj[key] = value;
+	}
+	console.log(obj)
+	delete obj["status"]
+	const keys = Object.keys(obj)
+	
+	
+
+	mysqlDb.query(
+		'select site_name from site',
+		(error, results, fields) => {
+			if (results.length > 0) {
+				
+				var num_sites = results.length
+
+				console.log("num of sites")
+				console.log(num_sites)
+				
+				var input_num_site = {}
+				var input_data = []
+				for (var i=0; i<keys.length;i++){
+					var username = keys[i].split("_")[0]
+					var site = keys[i].split("_")[1]
+					if (!(site in input_num_site)){
+						input_num_site[site] = 1
+					}
+					input_data.push([username, site])
+				}
+				
+				// console.log("num of input sites")
+				// console.log(Object.keys(input_num_site).length)
+				var input_num_sites_length = Object.keys(input_num_site).length
+				console.log("list")
+				console.log(input_data)
+
+				if (input_num_sites_length == num_sites) {
+					mysqlDb.query(
+						'delete from working_at',
+						(error, results, fields) => {
+						});
+					
+					for (var i=0; i<input_data.length; i++) {
+						var u = input_data[i][0]
+						var s = input_data[i][1]
+
+						mysqlDb.query(
+							'CALL assign_tester(?,?)',
+							[u,s],
+							(error, results, fields) => {
+							});
+					}
+					
+					res.render("successed", {title:"Successfully Updated Testers", message:"You have successfully Updated Testers to Testing Sites"})
+
+				} else {
+					res.cookie("error", "All Tester sites require at least one tester." )
+					res.redirect('/reassign_testers')
+				}
+			} else {
+				console.log("error1")
+			}
+		});
 })
 
 // Screen 15: Create a Testing Site
