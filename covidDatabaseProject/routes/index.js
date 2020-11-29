@@ -278,6 +278,14 @@ router.get('/home_screen', (req, res, next) => {
 	res.render('screen3', {title:status, table:table});
 })
 
+function ifEmpty(word) {
+	if (word == "") {
+		return null
+	} else {
+		return word
+	}
+}
+
 // Screen 4: Student View Test Results
 router.get('/view_my_results', (req, res, next) => {
 	console.log(req.cookies.username)
@@ -300,14 +308,8 @@ router.post('/view_my_results_filtered', (req, res, next) => {
 		var initial_data = req.body.initial_data
 
 		var data_list = initial_data.split(",")
-		var start_date = data_list[1]
-		if (start_date == "") {
-			start_date = null
-		}
-		var end_date = data_list[2]
-		if (end_date == "") {
-			end_date = null
-		}
+		var start_date = ifEmpty(data_list[1])
+		var end_date = ifEmpty(data_list[2])
 	
  	} else {
 		var start_date = null
@@ -590,10 +592,10 @@ router.post('/sign_up_for_a_test_filtered', (req, res, next) => {
 		var data_list = initial_data.split(",")
 
 		var testing_site = data_list[1]
-		var start_date = data_list[2]
-		var end_date = data_list[3]
-		var start_time = data_list[4]
-		var end_time = data_list[5]
+		var start_date = ifEmpty(data_list[2])
+		var end_date = ifEmpty(data_list[3])
+		var start_time = ifEmpty(data_list[4])
+		var end_time = ifEmpty(data_list[5])
 
 	} else {
 		console.log ("here?")
