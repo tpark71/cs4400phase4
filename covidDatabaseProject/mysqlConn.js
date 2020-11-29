@@ -3,7 +3,7 @@ const pool = mysql.createConnection({
 	host     : 'localhost',
 	port	 : '3306',
 	user     : 'root',
-	password : 'Akftns67!',
+	password : '1324',
 	database : 'covidtest_fall2020'
 });
 

@@ -579,17 +579,18 @@ router.get('/sign_up_for_a_test', (req, res, next) => {
 		});
 })
 
-router.post('/sign_up_for_a_test_filtered', (req, res, next) => {
+router.post('/sign_up_for_test_filtered', (req, res, next) => {
 	var username = req.cookies.username;
 
 	if (req.body.orderby !== "undefined" && req.body.orderby) {
+		console.log(req.body.orderby)
 		var orderBy = req.body.orderby
 
 		var initial_data = req.body.initial_data
 
 		var data_list = initial_data.split(",")
 
-		var testing_site = data_list[1]
+		var testing_site = ifEmpty(data_list[1])
 		var start_date = ifEmpty(data_list[2])
 		var end_date = ifEmpty(data_list[3])
 		var start_time = ifEmpty(data_list[4])
@@ -686,7 +687,7 @@ router.post('/sign_up_for_a_test_filtered', (req, res, next) => {
 
 })
 
-router.post('/sign_up_for_a_test_process', (req, res, next) => {
+router.post('/sign_up_for_test_process', (req, res, next) => {
 	var username = req.cookies.username
 	const obj = {};
 	for (let [key, value] of Object.entries(req.body)) {

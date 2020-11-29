@@ -13,7 +13,7 @@
             
                 <table>
                     <% if (data[0].appt_date != "N/A") { %>
-                    <form action="view_my_results_filtered" method="POST">
+                    <form action="sign_up_for_test_filtered" method="POST">
                         <tr>
                             <input type="hidden" name="initial_data" value="<%=initial_data%>">
                             <th>
@@ -46,7 +46,7 @@
                         </tr>
                     <% } %>
 
-                    <form action="sign_up_for_a_test_process" method="POST">
+                    <form action="sign_up_for_test_process" method="POST">
                     <% for (var i = 0; i < data.length; i++) { %>
                         <tr>
                         <td><%= data[i].appt_date %></td>
@@ -64,7 +64,7 @@
             </form>
             <br>
             
-            <form action="sign_up_for_a_test_filtered" method="POST">
+            <form action="sign_up_for_test_filtered" method="POST">
 
                 <br>
                 <span id="message">Site</span>
