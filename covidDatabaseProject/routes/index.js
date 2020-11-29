@@ -23,7 +23,7 @@ router.post('/auth', (req, res , next) => {
 		left join student on student_username = username \
 		left join employee on emp_username = username \
 		left join administrator on admin_username = username \
-		where username = ? and user_password = ?',
+		where username = ? and user_password = MD5(?)',
 	 [username, password],
 	 (error, results, fields) => {
 		if (results.length > 0) {
