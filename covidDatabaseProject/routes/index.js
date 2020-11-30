@@ -693,6 +693,7 @@ router.post('/sign_up_for_test_process', (req, res, next) => {
 	for (let [key, value] of Object.entries(req.body)) {
 		obj[key] = value;
 	}
+	console.log("here!@!!@")
 	console.log(obj)
 
 	var appointment = obj.sign_up_spot.split(",")
@@ -1157,7 +1158,6 @@ router.post('/process_pool_filtered', (req, res, next) => {
 						res.cookie("error", "Processed Date must be after the latest timeslot date of the tests")
 						res.redirect("/process_pool")
 				} else {
-					// 너무 귀찮아서 아직 테스트 안함ㅋㅋㅋ
 					console.log("got here!")
 					if (status == "2") {
 						mysqlDb.query(
@@ -1247,7 +1247,7 @@ router.get('/create_appointment', (req, res, next) => {
 					
 					res.render('screen12', {title:"Create Appointment", sites:sites, error:error})
 				} else {
-					console.log("Error!");
+					res.render("successed", {title:"Sorry!", message:"You cannot use this feature because you are not assigned to any testing site."})
 				}
 			});
 	}
@@ -1287,7 +1287,17 @@ router.post('/create_appointment_process', (req, res, next) => {
 							res.cookie("error", "Cannot Make Appointment. Try Another Time")
 							res.redirect('/create_appointment')
 						} else {
-							res.render("successed", {title:"Congrat!", message:message});
+
+							mysqlDb.query(
+								'select * from appointment where appt_date=? and appt_time=? and site_name=?',
+								[date, time, site],
+								(error, results, fields) => {
+									if (results.length > 0) {
+										res.render("successed", {title:"Congrat!", message:message});
+									} else {
+										res.render("successed", {title:"Sorry!", message:"Too Many Appointment on This Date. Cannot Create Appointment"});
+									}
+								});
 						}
 					});
 			}
@@ -1485,7 +1495,7 @@ router.get('/reassign_testers', (req, res, next) => {
 		});
 })
 
-router.post('/create_testing_site_process', (req, res, next) => {
+router.post('/reassign_testers_process', (req, res, next) => {
 	var username = req.cookies.username
 	const obj = {};
 	
@@ -1689,7 +1699,27 @@ router.get('/changing_testing', (req, res, next) => {
 						}
 					});
 			} else {
-				console.log("Error!");
+				mysqlDb.query(
+					'select fname, lname from user where username = ?',
+					[username],
+					(error, results, fields) => {
+						if (results.length > 0) {
+							var name = results;
+							mysqlDb.query(
+								'select lower(replace(site_name, " ", "")) as sid , site_name from site',
+								(error, results, fields) => {
+									if (results.length > 0) {
+										var choices = results;
+										console.log(results)
+										res.render('screen17', {title:"Tester Change Testing Site", username:username, name:name, sites:"", error:"", choices:choices})
+									} else {
+										console.log("Error!");
+									}
+								});
+						} else {
+							console.log("Error!");
+						}
+					});
 			}
 		});
 })

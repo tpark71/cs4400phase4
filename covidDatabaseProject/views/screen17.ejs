@@ -21,23 +21,20 @@
                     <tr>
                         <td>Assigned sites</td>
                         <td id="allSites">
-                            <% for (var i = 0; i < sites.length; i++) { %>
-                                <li id="<%= sites[i].site %>">
-                                    <input onclick='deleteSite("<%= sites[i].site %>")' type="button" name="<%= sites[i].site %>" value="X"> <%= sites[i].site %>
-                                    <input type="hidden" name="<%= sites[i].site %>" value="<%= sites[i].site %>">
-                                </li>
-                                
+                            <% if (sites != "") { %>
+                                <% for (var i = 0; i < sites.length; i++) { %>
+                                    <li id="<%= sites[i].site %>">
+                                        <input onclick='deleteSite("<%= sites[i].site %>")' type="button" name="<%= sites[i].site %>" value="X"> <%= sites[i].site %>
+                                        <input type="hidden" name="<%= sites[i].site %>" value="<%= sites[i].site %>">
+                                    </li>
+                                    
+                                <% } %>
                             <% } %>
                             
                             
                         </td>
                     </tr>
                 </table>
-
-
-            
-            
-
                 <br>
                 <input type="button" onclick="addSite()" value = "Add">
                 <select name="status" id="options">

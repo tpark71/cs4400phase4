@@ -53,7 +53,7 @@
                         <td><%= data[i].appt_time %></td>
                         <td><%= data[i].street %></td>
                         <td><%= data[i].site_name %></td>
-                        <td><input id="sign_up_spot" type="radio" name="sign_up_spot" value="<%= data[i].site_name %>,<%= data[i].appt_date %>,<%= data[i].appt_time %>"></td>
+                        <td><input id="sign_up_spot" type="radio" name="sign_up_spot" value="<%= data[i].site_name %>,<%= data[i].appt_date %>,<%= data[i].appt_time %>" required></td>
                         </tr>    
                     <% } %>
                     

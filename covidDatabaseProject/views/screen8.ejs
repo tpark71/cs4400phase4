@@ -49,7 +49,13 @@
                     <% for (var i = 0; i < data.length; i++) { %>
                         <tr>
                         <td><%= data[i].test_id %></td>
-                        <td><a href="/explore_pool_result<%=data[i].pool_id%>"><%= data[i].pool_id %></a></td>
+                        <td>
+                          <% if (data[i].pool_id != "N/A") { %>
+                            <a href="/explore_pool_result<%=data[i].pool_id%>"><%= data[i].pool_id %></a>
+                          <% } else { %>
+                            <%= data[i].pool_id %>
+                          <% } %>
+                        </td>
                         <td><%= data[i].test_date %></td>
                         <td><%= data[i].process_date %></td>
                         <td><%= data[i].test_status %></td>
@@ -77,17 +83,13 @@
                 <span id="message">End Date Tested</span>
                 <input type="date" name="end_date">
 
-                <input type="submit" value="Submit">
+                <input type="submit" value="Filter">
 
 
             </form> 
 
-            <form action="sign_up_for_a_test" method="GET">
+            <form action="lab_tech_tests_processed" method="GET">
                 <input type="submit" value="Reset">
-            </form>
-
-            <form action="home_screen" method="GET">
-                <input type="submit" value="Back (Home)">
             </form>
 
             <form action="home_screen" method="GET">
