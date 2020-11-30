@@ -17,18 +17,11 @@ npm install -g nodemon
 ## How to start
 
 ~~~~
+cd covidDatabaseProject
 nodemon
 ~~~~
 
 Then using your favorite browser to access localhost:3000
-
-## TODO
-
-- Screen 11 (Only need to test whether it works)
-- Screen 14
-- Sorting table for all required screens
-- Need to test the edge cases for all screens
-
 
 ## For Windows Only
 

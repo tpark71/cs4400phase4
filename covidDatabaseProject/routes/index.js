@@ -94,6 +94,7 @@ router.get('/employee_only', (req, res, next) => {
 
 // Screen 2: Register
 router.get('/register', (req, res, next) => {
+	var message = String(req.cookies.error)
 	mysqlDb.query('SELECT DISTINCT housing_type FROM student',
 	(error, results, fields) => {
 		if (results.length > 0) {
@@ -104,7 +105,14 @@ router.get('/register', (req, res, next) => {
 					if (results.length > 0) {
 						var location = results;
 						console.log("step 3")
-						res.render('screen2', {title:"Register", loc:location, housing:housing_type, error:""})
+
+						error = message
+						if (error === 'undefined') { 
+							error = ""
+						}
+						res.clearCookie("error")
+
+						res.render('screen2', {title:"Register", loc:location, housing:housing_type, error:error})
 					} else {
 						console.log("Error!");
 					}
@@ -121,18 +129,28 @@ function not_unique_id() {
 
 router.post('/create', (req, res , next) => {
 	var username = req.body.username;
+	var fname = req.body.fname;
+	var lname = req.body.lname;
 
-	mysqlDb.query('SELECT * FROM user where username = ?',
+	mysqlDb.query(
+		'SELECT * FROM user where fname = ? and lname = ?',
+		[fname, lname],
+		(error, results, fields) => {
+			if (results.length > 0) {
+				res.cookie("error", "Your Name Already Exist!" )
+				res.redirect('/register');
+			} else {
+				mysqlDb.query('SELECT * FROM user where username = ?',
 				[username],
 				(error, results, fields) => {
 					if (results.length > 0) {
 						console.log("step 5")
-						// req.session.error = 'Username is already taken. Please try another';
+						res.cookie("error", "Username Already Exist!" )
 						res.redirect('/register');
 					} else {
 						var email = req.body.email;
-						var fname = req.body.fname;
-						var lname = req.body.lname;
+						fname = req.body.fname;
+						lname = req.body.lname;
 						var password = req.body.password;
 						var status = req.body.status;
 					
@@ -148,7 +166,7 @@ router.post('/create', (req, res , next) => {
 							res.cookie("username", username)
 							res.cookie("status", "Student")
 					
-							res.redirect("/home_screen")
+							res.redirect("/valid")
 					
 						} else if (status == "3") {
 							var phone_num = req.body.phone;
@@ -182,14 +200,40 @@ router.post('/create', (req, res , next) => {
 							(error, results, fields) => {
 							});
 					
-							res.redirect("/home_screen")
+							res.redirect("/valid")
 					
 						} else {
 							console.log("Error: Status is not detected!")
 						}
 					}
+				});
+			}
 		});
+
+
 })
+
+
+router.get('/valid', (req, res, next) => {
+	var username = req.cookies.username
+
+	mysqlDb.query(
+		'SELECT * FROM user where username = ?',
+		[username],
+		(error, results, fields) => {
+			if (results.length > 0) {
+				res.redirect("/home_screen")
+			} else {
+				res.cookie("error", "Your input is invalid. Please check again" )
+				res.redirect('/register');
+			}
+		});
+
+
+});
+
+
+
 
 
 // Screen 3: Home Screen(s)
@@ -673,7 +717,7 @@ router.post('/sign_up_for_test_filtered', (req, res, next) => {
 												
 												res.render('screen7', {sites:sites, data:results, initial_data:initial_data, error:""})
 											} else {
-												res.redirect("/sign_up_for_a_test_filtered")
+												res.redirect("/sign_up_for_a_test")
 											}
 									});
 						} else {
@@ -706,10 +750,10 @@ router.post('/sign_up_for_test_process', (req, res, next) => {
 	var time = am_pm[0].split(":")
 	if (am_pm[1] == "AM" && am_pm[1] != "12:00") {
 		time = time[0] + ":" + time[1] + ":00" 
-	} else if (am_pm[1] == "AM" && am_pm[0] == "12:00") {
-		time = "00:00:00"
-	} else if (am_pm[1] == "PM" && am_pm[0] == "12:00") {
-		time = "12:00:00"
+	} else if (am_pm[1] == "AM" && time[0] == "12") {
+		time = "00:"+ time[1] + ":00"
+	} else if (am_pm[1] == "PM" && time[0] == "12") {
+		time = "12:" + time[1] + ":00"
 	} else {
 		var num = Number(time[0])
 		num += 12
@@ -954,28 +998,50 @@ router.get('/view_pool', (req, res, next) => {
 router.post('/view_pool_filtered', (req, res, next) => {
 	console.log(req.body.sites)
 
-	var pool_status = req.body.sites;
-	var start_date = null
-	var end_date = null
-	var processed_by = req.body.processed_by;
+	// var pool_status = req.body.sites;
+	// var processed_by = req.body.processed_by;
 	
-	if (pool_status == "all") {
-		pool_status = null;
+	if (req.body.orderby !== "undefined" && req.body.orderby) {
+		var orderBy = req.body.orderby
+
+		var initial_data = req.body.initial_data
+
+		var data_list = initial_data.split(",")
+		var start_date = ifEmpty(data_list[0])
+		var end_date = ifEmpty(data_list[1])
+		var pool_status = ifEmpty(data_list[2])
+		var processed_by = ifEmpty(data_list[3])
+	
+ 	} else {
+		var pool_status = req.body.sites;
+		var processed_by = req.body.processed_by;
+		var start_date = null
+		var end_date = null
+
+		if (pool_status == "all") {
+			pool_status = null;
+		}
+
+		if (processed_by == '') {
+			processed_by = null;
+		}
+
+		if (req.body.start_date !== 'undefined' && req.body.start_date) { 
+			start_date = req.body.start_date
+			start_date = String(start_date)
+		}
+
+		if (req.body.end_date !== 'undefined' && req.body.end_date) { 
+			end_date = req.body.end_date
+			end_date = String(end_date)
+		}
+		var orderBy = "pool_id"
 	}
 
-	if (processed_by == '') {
-		processed_by = null;
-	}
+	var initial_data = String([start_date, end_date, pool_status, processed_by])
 
-	if (req.body.start_date !== 'undefined' && req.body.start_date) { 
-		start_date = req.body.start_date
-		start_date = String(start_date)
-	}
-
-	if (req.body.end_date !== 'undefined' && req.body.end_date) { 
-		end_date = req.body.end_date
-		end_date = String(end_date)
-	}
+	console.log("initial_data")
+	console.log(initial_data)
 
 	mysqlDb.query(
 		'CALL view_pools(?,?,?,?)',
@@ -983,15 +1049,15 @@ router.post('/view_pool_filtered', (req, res, next) => {
 		(error, results, fields) => {
 		});
 
-
+	var query = 'select pool_id, test_ids, DATE_FORMAT(date_processed, "%m/%d/%Y") as date_processed, processed_by, pool_status from view_pools_result order by ' + orderBy
 
 	mysqlDb.query(
-		'select pool_id, test_ids, DATE_FORMAT(date_processed, "%m/%d/%Y") as date_processed, processed_by, pool_status from view_pools_result',
+		query,
 		(error, results, fields) => {
 			if (results.length > 0) {
 				var data = results;
 				var pool = [ "Positive", "Negative", "Pending"]
-				res.render('screen9', {title:"View Pool", pool:pool, data:data, error:""})
+				res.render('screen9', {title:"View Pool", pool:pool, data:data, error:"" , initial_data:initial_data})
 			} else {
 				res.cookie("error", "No Result. Please try with other option(s)")
 				res.redirect('/view_pool')
@@ -1156,7 +1222,7 @@ router.post('/process_pool_filtered', (req, res, next) => {
 					last_date_list[0]==processed_date_list[0] && last_date_list[1]==processed_date_list[1] && last_date_list[2]>=processed_date_list[2]
 					){
 						res.cookie("error", "Processed Date must be after the latest timeslot date of the tests")
-						res.redirect("/process_pool")
+						res.redirect("/process_pool" + pool_id)
 				} else {
 					console.log("got here!")
 					if (status == "2") {
@@ -1194,7 +1260,7 @@ router.post('/process_pool_filtered', (req, res, next) => {
 					}
 				}
 			} else {
-				console.log("Error!");
+				console.log("!!!###@@@");
 			}
 		});
 })
@@ -1751,8 +1817,26 @@ router.post("/changing_testing_process", (req, res, next) => {
 			[username, curr_site],
 			(error, results, fields) => {
 			});
-
 	}
+
+	mysqlDb.query(
+		'select site_name from site where site_name not in (select site from working_at)',
+		(error, results, fields) => {
+			if (results.length > 0) {
+				var empty_sites = results;
+				for (var i=0;i<empty_sites.length; i++) {
+					mysqlDb.query(
+						'CALL assign_tester(?, ?)',
+						[username, empty_sites[i].site_name],
+						(error, results, fields) => {
+						});
+				}
+			} else {
+				console.log("Error!");
+			}
+		});
+
+
 
 	res.render("successed", {title:"Successfully Updated", message:"Your Assigned Testing Sites are Successfully Updated!"})
 

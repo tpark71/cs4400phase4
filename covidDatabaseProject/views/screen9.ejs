@@ -10,11 +10,42 @@
             <h1><%= title %></h1>
 
             <span id="error_message"><%= error%></span>
-            
-                <table>
+            <table>
+                <% if (data[0].test_ids != "N/A") { %>
+                <form action="view_pool_filtered" method="POST">
+                
                     <tr>
-                    <th>Pool ID</th><th>Test IDs</th><th>Date Processed</th><th>Processed By</th><th>Pool Status</th>
+                    
+                        <input type="hidden" name="initial_data" value="<%=initial_data%>">
+                        <th>
+                            Pool ID</th>
+                        <th>
+                            Test IDs</th>
+                        <th>
+                            <button type="submit" name="orderby" value = "date_processed asc"><</button>
+                            <button type="submit" name="orderby" value = "date_processed desc">></button>
+                            Date Processed</th>
+                        <th>
+                            <button type="submit" name="orderby" value = "processed_by asc"><</button>
+                            <button type="submit" name="orderby" value = "processed_by desc">></button>
+                            Processed By</th>
+                        <th>
+                            <button type="submit" name="orderby" value = "pool_status asc"><</button>
+                            <button type="submit" name="orderby" value = "pool_status desc">></button>
+                            Pool Status</th>
                     </tr>
+                </form>
+                <% } else { %>
+                    <tr>
+                        <th>Pool ID</th>
+                        <th>Test IDs</th>
+                        <th>Date Processed</th>
+                        <th>Processed By</th>
+                        <th>Pool Status</th>
+                    </tr>
+                <% } %>
+                
+                
                     <% for (var i = 0; i < data.length; i++) { %>
                         <tr>
                         <td>
